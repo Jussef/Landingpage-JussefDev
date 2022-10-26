@@ -1,20 +1,26 @@
-.colorPrimary{
-    color: #00b8d4;
+html body {
+  font-family: "M PLUS Code Latin", sans-serif;
 }
-.colorPrimaryLight{
-    color: #62ebff;
-}
-.colorPrimaryDark{
-    color: #0088a3;
+.container {
+  font-family: "M PLUS Code Latin", sans-serif;
 }
 
+.colorPrimary {
+  color: #00b8d4;
+}
+.colorPrimaryLight {
+  color: #62ebff;
+}
+.colorPrimaryDark {
+  color: #0088a3;
+}
 
-.colorSecondary{
-    color: #ff5252;
+.colorSecondary {
+  color: #ff5252;
 }
-.colorSecondaryLight{
-    color: #ff867f;
+.colorSecondaryLight {
+  color: #ff867f;
 }
-.colorSecondaryDark{
-    color: #c50e29;
+.colorSecondaryDark {
+  color: #c50e29;
 }
