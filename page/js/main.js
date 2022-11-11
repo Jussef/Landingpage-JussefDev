@@ -75,17 +75,51 @@
   }
 
   // Header scroll class
-  $(window).scroll(function() {
+  $(window).scroll(function () {
     if ($(this).scrollTop() > 100) {
-      $('#header').addClass('header-scrolled');
+      $("#header").addClass("header-scrolled");
+      $("#logo").addClass("logoInicio");
+      $("#cajalogo").addClass("cajalogochica");
     } else {
-      $('#header').removeClass('header-scrolled');
+      $("#header").removeClass("header-scrolled");
+      $("#logo").removeClass("logoInicio");
+      $("#cajalogo").removeClass("cajalogochica");
     }
   });
 
   if ($(window).scrollTop() > 100) {
     $('#header').addClass('header-scrolled');
   }
+
+  new TypeIt("#yo", {
+    strings:["Soy Jussef, Frontend Developer."],
+    speed: 65,
+    loop: false,
+    waitUntilVisible: false,
+    afterComplete: function (instance) {
+      instance.destroy();
+    }
+  })
+  .go();
+  
+  new TypeIt("#yo2", {
+    speed: 65,
+    loop: true,
+    startDelay: 3500,
+    waitUntilVisible: true,
+  })
+  .type("Ingeniero de software")
+  .pause(1000)
+  .delete(21)
+  .type("Creación de paginas web")
+  .pause(1000)
+  .delete(25)
+  .type("Estudiando Android")
+  .pause(1000)
+  .delete(18)
+  .type("Un poco de diseño gráfico")
+  .pause(1000)
+  .go();
 
   // Smooth scroll for the menu and links with .scrollto classes
   $('.nav-menu a, #mobile-nav a, .scrollto').on('click', function() {
