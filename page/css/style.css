@@ -924,48 +924,51 @@ body.mobile-nav-active #mobile-nav-toggle {
 #skills .bgKotlin{
   background-color: #755ef1;
 }
+#skills .bgJquery{
+  background-color: #182942;
+}
 
-/* Facts Section
+/* Logros Section
 --------------------------------*/
 
-#facts {
-  background: url("../img/facts-bg.jpg") center top no-repeat fixed;
+#logros {
+  background: url("../img/fondos/f2.jpg") center top no-repeat fixed;
   background-size: cover;
   padding: 60px 0 0 0;
   position: relative;
 }
 
-#facts::before {
+#logros::before {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.80);
   z-index: 9;
 }
 
-#facts .container {
+#logros .container {
   position: relative;
   z-index: 10;
 }
 
-#facts .counters span {
+#logros .counters span {
   font-weight: bold;
   font-size: 48px;
   display: block;
   color: var(--color1);
 }
 
-#facts .counters p {
+#logros .counters p {
   padding: 0;
   margin: 0 0 20px 0;
   font-size: 14px;
   color: #111;
 }
 
-#facts .facts-img {
+#logros .logros-img {
   text-align: center;
   padding-top: 30px;
 }
@@ -1130,10 +1133,10 @@ body.mobile-nav-active #mobile-nav-toggle {
 }
 
 #clients img {
-  max-width: 100%;
+  max-width: 65%;
   opacity: 0.5;
   transition: 0.3s;
-  padding: 15px 0;
+  padding: 15px 15px 15px 15px;
 }
 
 #clients img:hover {
