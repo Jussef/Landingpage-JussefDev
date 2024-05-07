@@ -1,0 +1,155 @@
+@import "../../resources/scss/variables";
+
+#myHeader {
+  font-family: "Montserrat Regular";
+  background-color: #fff;
+  padding: 0 15px;
+
+  & .MuiButton-root {
+    width: 170px;
+    background: $color-normal !important;
+    color: #fff !important;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    border-radius: 0px;
+    text-transform: capitalize;
+    font-weight: bold;
+    font-family: "Poppins Regular";
+
+    &:hover {
+      background: transparent !important;
+      border: 2px solid $color-normal !important;
+      color: $color-normal !important;
+    }
+  }
+}
+
+.appBar {
+  background-color: #fff;
+  border-bottom: 0px solid #fff;
+  transition: all 0.5s ease-in !important;
+}
+.scroll {
+  background-color: #fff;
+  border-bottom: 4px solid $color-naranja;
+  transition: all 0.5s ease-in !important;
+}
+.header {
+  height: 80px;
+}
+
+.logo {
+  width: 170px;
+}
+
+.transform-img {
+  content: url(../../resources/images/header/logo.png);
+}
+
+.text-header-sticky {
+  color: #fff !important;
+}
+
+.btn-menu {
+  width: 200px;
+  padding: 10px;
+}
+
+.btn-inline {
+  align-items: center;
+  width: 100%;
+  display: inline-flex;
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.Menu-button-8 {
+  width: 100% !important;
+  text-align: left !important;
+}
+
+.MuiButton-label {
+  display: block !important;
+}
+
+.icon-menu {
+  padding: 10px;
+}
+
+.nav-links {
+  // width: 100%;
+  // display: inline-flex;
+  font-family: "Poppins Regular";
+  font-size: 14px;
+  // color: #fff;
+  display: flex;
+  float: right;
+  text-transform: uppercase;
+}
+
+.nav-links li {
+  list-style-type: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-family: "Poppins Regular";
+  color: $color-texto;
+}
+
+.border {
+  border-bottom: 2px solid $color-normal;
+  padding-bottom: 5px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #464646 !important;
+  margin-right: 20px;
+  font-family: "Poppins Regular";
+}
+
+.nav-links li div {
+  margin-right: 20px;
+}
+
+.img-fondo-menu {
+  width: 100%;
+  // background-image: url(../../Resources/imagenes/login/logo-b-talks.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  /* position: absolute; */
+  /* bottom: 0px; */
+  left: 0;
+  margin-top: 30px;
+}
+
+.header .MuiInputBase-root {
+  height: 5px !important;
+}
+
+.header .MuiSelect-icon {
+  top: calc(50% - 20px) !important;
+  color: #339933 !important;
+}
+
+.header .MuiInputLabel-formControl {
+  transform: translate(0, 3px) scale(1) !important;
+}
+
+.header .MuiFormLabel-root {
+  color: #000 !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+}
+
+.header .MuiInput-underline:before,
+.header .MuiInput-underline:after {
+  border: none !important;
+}
+
+.header .MuiListItem-root.Mui-selected,
+.header .MuiListItem-root.Mui-selected:hover {
+  background-color: transparent !important;
+}

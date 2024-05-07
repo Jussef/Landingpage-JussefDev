@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from "react";
-import "./styles.scss";
+import React from "react";
+import { Container, Box, Grid } from "@mui/material";
+import Header from "../../components/Header";
 
 export default function Home() {
-  useEffect(() => {}, []);
-
   return (
-    <>
-      <Box id="Home" textAlign="center" className="mt">
-        <Grid container direction="row" spacing={2}>
-          <Grid item md={6} xs={12}>
-            <p className="">ss</p>
+    <div>
+      <Header />
+      <Container maxWidth="sm">
+        <Box textAlign="center">
+          <Grid container direction="row" spacing={2}>
+            <Grid item md={6} xs={12}>
+              <p className="">HOLA</p>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
-    </>
+        </Box>
+      </Container>
+    </div>
   );
 }
