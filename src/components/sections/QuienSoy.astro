@@ -72,9 +72,9 @@
 
 	/* Section label */
 	.section-label {
-		font-family: 'Poppins', sans-serif;
-		font-size: 1.05rem;
-		font-weight: 600;
+		font-family: var(--font-main);
+		font-size: 1rem;
+		font-weight: 500;
 		color: var(--accent-orange);
 		margin: 0 0 3.5rem;
 		letter-spacing: 0.04em;
@@ -114,17 +114,12 @@
 		border-radius: 12px;
 	}
 
-	/* Text column */
+	/* Text column — animation is handled by [data-fade] rules */
 	.about-text-col p {
-		font-family: 'Montserrat', sans-serif;
-		font-size: clamp(0.92rem, 1.6vw, 1.05rem);
-		font-weight: 400;
-		line-height: 1.85;
+		font-size: clamp(0.95rem, 1.7vw, 1.1rem);
+		line-height: 1.8;
 		color: #c8d0e0;
 		margin: 0 0 1.5rem;
-		opacity: 0;
-		transform: translateY(18px);
-		transition: opacity 0.7s ease, transform 0.7s ease;
 	}
 
 	.about-text-col p:last-child { margin-bottom: 0; }

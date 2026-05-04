@@ -1,12 +1,17 @@
 @import "tailwindcss";
 
 :root {
+  /* Colors */
   --bg:            #071025;
   --bg-darker:     #050c1d;
   --accent-orange: #f07830;
   --accent-cyan:   #2dd4c0;
   --text-primary:  #e8eaf0;
   --text-muted:    #8892a8;
+
+  /* Fonts */
+  --font-main: 'Fira Code', monospace;
+  --font-ui:   'Inter', system-ui, sans-serif;
 }
 
 html {
@@ -18,7 +23,7 @@ body {
   min-height: 100vh;
   background-color: var(--bg);
   color: var(--text-primary);
-  font-family: 'Montserrat', system-ui, sans-serif;
+  font-family: var(--font-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;

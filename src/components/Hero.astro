@@ -120,7 +120,7 @@ const icons = [
 	}
 
 	.greeting {
-		font-family: 'Poppins', sans-serif;
+		font-family: var(--font-main);
 		font-size: clamp(1.4rem, 2.8vw, 2.1rem);
 		font-weight: 700;
 		color: var(--text-primary);
@@ -129,13 +129,13 @@ const icons = [
 	}
 
 	.name {
-		font-family: 'Poppins', sans-serif;
+		font-family: var(--font-main);
 		font-size: clamp(3.5rem, 9vw, 6.5rem);
-		font-weight: 800;
+		font-weight: 900;
 		color: var(--accent-orange);
 		margin: 0 0 0.65rem;
 		line-height: 1;
-		letter-spacing: -0.02em;
+		letter-spacing: -0.03em;
 		display: flex;
 		perspective: 800px;
 	}
@@ -148,16 +148,15 @@ const icons = [
 	}
 
 	.subtitle {
-		font-family: 'Poppins', sans-serif;
 		font-size: clamp(1.1rem, 2.5vw, 1.75rem);
 		font-weight: 500;
 		margin: 0;
 		line-height: 1.3;
 	}
 
-	.sym   { color: var(--accent-orange); font-family: 'Fira Code', monospace; font-weight: 600; }
-	.front { color: var(--accent-cyan);   font-family: 'Fira Code', monospace; font-weight: 500; }
-	.eng   { color: var(--text-primary);  font-weight: 400; font-family: 'Poppins', sans-serif; }
+	.sym   { color: var(--accent-orange); font-family: var(--font-main); font-weight: 600; }
+	.front { color: var(--accent-cyan);   font-family: var(--font-main); font-weight: 500; }
+	.eng   { color: var(--text-primary);  font-weight: 400; }
 
 	/* ── Right column ── */
 	.hero-right {
