@@ -1,0 +1,221 @@
+---
+// Hero con animación GSAP split text cinematográfico
+---
+
+<section class="hero" id="hero">
+	<div class="hero-content">
+		<div class="hero-text">
+			<h1 class="hero-name" id="hero-name" aria-label="Jussef">
+				<span class="char">J</span><span class="char">u</span><span class="char">s</span><span class="char">s</span><span class="char">e</span><span class="char">f</span>
+			</h1>
+			<div class="hero-title-wrapper">
+				<p class="hero-title" id="hero-title">Web Developer</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- Indicador de scroll -->
+	<div class="scroll-indicator" id="scroll-indicator">
+		<span class="scroll-text">Scroll</span>
+		<div class="scroll-line"></div>
+	</div>
+</section>
+
+<script>
+	import { gsap } from 'gsap';
+
+	// Timeline principal
+	const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+
+	// Animación de cada letra con stagger
+	tl.set('.char', {
+		opacity: 0,
+		y: 100,
+		rotateX: -90,
+		filter: 'blur(10px)'
+	})
+	.set('.hero-title', {
+		opacity: 0,
+		y: 30,
+		filter: 'blur(5px)'
+	})
+	.set('#scroll-indicator', {
+		opacity: 0,
+		y: 20
+	})
+	// Revelar letras una por una
+	.to('.char', {
+		opacity: 1,
+		y: 0,
+		rotateX: 0,
+		filter: 'blur(0px)',
+		duration: 1.2,
+		stagger: {
+			each: 0.08,
+			from: 'start'
+		}
+	}, 0.3)
+	// Línea decorativa aparece
+	.to('.hero-title-wrapper', {
+		'--line-width': '100%',
+		duration: 0.8,
+		ease: 'power2.inOut'
+	}, '-=0.4')
+	// Subtítulo aparece
+	.to('.hero-title', {
+		opacity: 1,
+		y: 0,
+		filter: 'blur(0px)',
+		duration: 0.8
+	}, '-=0.5')
+	// Indicador de scroll
+	.to('#scroll-indicator', {
+		opacity: 1,
+		y: 0,
+		duration: 0.6
+	}, '-=0.2');
+
+	// Efecto hover en las letras
+	const chars = document.querySelectorAll('.char');
+	chars.forEach(char => {
+		char.addEventListener('mouseenter', () => {
+			gsap.to(char, {
+				y: -10,
+				scale: 1.1,
+				color: '#ffffff',
+				duration: 0.3,
+				ease: 'power2.out'
+			});
+		});
+		char.addEventListener('mouseleave', () => {
+			gsap.to(char, {
+				y: 0,
+				scale: 1,
+				color: '#fafafa',
+				duration: 0.3,
+				ease: 'power2.out'
+			});
+		});
+	});
+</script>
+
+<style>
+	.hero {
+		position: relative;
+		width: 100%;
+		height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: #0a0a0a;
+		overflow: hidden;
+	}
+
+	.hero-content {
+		text-align: center;
+	}
+
+	.hero-text {
+		perspective: 1000px;
+	}
+
+	.hero-name {
+		font-size: clamp(4rem, 15vw, 12rem);
+		font-weight: 300;
+		letter-spacing: -0.03em;
+		margin: 0;
+		line-height: 1;
+		color: #fafafa;
+		display: flex;
+		justify-content: center;
+		overflow: hidden;
+	}
+
+	.char {
+		display: inline-block;
+		will-change: transform, opacity, filter;
+		transform-style: preserve-3d;
+		cursor: default;
+		transition: text-shadow 0.3s ease;
+	}
+
+	.char:hover {
+		text-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+	}
+
+	.hero-title-wrapper {
+		position: relative;
+		display: inline-block;
+		margin-top: 1.5rem;
+		--line-width: 0%;
+	}
+
+	.hero-title-wrapper::before {
+		content: '';
+		position: absolute;
+		top: -0.75rem;
+		left: 50%;
+		transform: translateX(-50%);
+		width: var(--line-width);
+		height: 1px;
+		background: linear-gradient(90deg, transparent, #525252, transparent);
+	}
+
+	.hero-title {
+		font-size: clamp(1rem, 2.5vw, 1.5rem);
+		font-weight: 400;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		margin: 0;
+		color: #737373;
+		will-change: transform, opacity, filter;
+	}
+
+	/* Indicador de scroll */
+	.scroll-indicator {
+		position: absolute;
+		bottom: 3rem;
+		left: 50%;
+		transform: translateX(-50%);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.scroll-text {
+		font-size: 0.75rem;
+		letter-spacing: 0.15em;
+		text-transform: uppercase;
+		color: #525252;
+	}
+
+	.scroll-line {
+		width: 1px;
+		height: 3rem;
+		background: linear-gradient(to bottom, #525252 0%, transparent 100%);
+		animation: scrollPulse 2s ease-in-out infinite;
+	}
+
+	@keyframes scrollPulse {
+		0%, 100% {
+			opacity: 1;
+			transform: scaleY(1);
+		}
+		50% {
+			opacity: 0.5;
+			transform: scaleY(0.8);
+		}
+	}
+
+	/* Responsive */
+	@media (max-width: 768px) {
+		.hero-title {
+			letter-spacing: 0.15em;
+		}
+
+		.scroll-indicator {
+			bottom: 2rem;
+		}
+	}
+</style>

@@ -1,0 +1,90 @@
+---
+// Sección Quien Soy - Frase impactante + descripción breve
+---
+
+<section class="quien-soy">
+	<div class="quien-soy-content">
+		<p class="quien-soy-frase" data-animate>
+			Creo experiencias web que importan.
+		</p>
+		<p class="quien-soy-descripcion" data-animate>
+			Desarrollador frontend con ojo para el detalle y obsesión por el rendimiento.
+			Transformo ideas en interfaces que funcionan, se sienten bien y dejan huella.
+		</p>
+	</div>
+</section>
+
+<script>
+	const animatedElements = document.querySelectorAll('[data-animate]');
+
+	const observer = new IntersectionObserver((entries) => {
+		entries.forEach((entry, index) => {
+			if (entry.isIntersecting) {
+				setTimeout(() => {
+					entry.target.classList.add('visible');
+				}, index * 150);
+			}
+		});
+	}, {
+		threshold: 0.2,
+		rootMargin: '0px 0px -50px 0px'
+	});
+
+	animatedElements.forEach(el => observer.observe(el));
+</script>
+
+<style>
+	.quien-soy {
+		position: relative;
+		z-index: 10;
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: #0a0a0a;
+		padding: 6rem 2rem;
+	}
+
+	.quien-soy-content {
+		max-width: 800px;
+		text-align: center;
+	}
+
+	.quien-soy-frase {
+		font-size: clamp(2rem, 5vw, 3.5rem);
+		font-weight: 300;
+		line-height: 1.2;
+		letter-spacing: -0.02em;
+		color: #fafafa;
+		margin: 0 0 2rem;
+		opacity: 0;
+		transform: translateY(30px);
+		transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+	}
+
+	.quien-soy-descripcion {
+		font-size: clamp(1rem, 2vw, 1.25rem);
+		font-weight: 400;
+		line-height: 1.7;
+		color: #a3a3a3;
+		margin: 0;
+		opacity: 0;
+		transform: translateY(30px);
+		transition: opacity 0.8s ease-out 0.15s, transform 0.8s ease-out 0.15s;
+	}
+
+	[data-animate].visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	@media (max-width: 768px) {
+		.quien-soy {
+			padding: 4rem 1.5rem;
+		}
+
+		.quien-soy-frase {
+			margin-bottom: 1.5rem;
+		}
+	}
+</style>
