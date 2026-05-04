@@ -1,90 +1,152 @@
 ---
-// Sección Quien Soy - Frase impactante + descripción breve
+// About section
 ---
 
-<section class="quien-soy">
-	<div class="quien-soy-content">
-		<p class="quien-soy-frase" data-animate>
-			Creo experiencias web que importan.
-		</p>
-		<p class="quien-soy-descripcion" data-animate>
-			Desarrollador frontend con ojo para el detalle y obsesión por el rendimiento.
-			Transformo ideas en interfaces que funcionan, se sienten bien y dejan huella.
-		</p>
+<section class="about" id="about">
+	<div class="about-wrap">
+
+		<p class="section-label" data-fade>≥ About</p>
+
+		<div class="about-grid">
+			<div class="about-img-col" data-slide>
+				<img src="/img/about.png" alt="Jussef — React superhero" class="about-img" />
+			</div>
+
+			<div class="about-text-col">
+				<p data-fade>
+					Hi! I'm a developer who loves sharing and teaching what I've learned.
+					I have over 6 years of experience building web applications.
+				</p>
+				<p data-fade>
+					I'm passionate about staying up to date with the latest technologies —
+					I truly believe that one day we'll see robots just like in the movies,
+					and that's one of the reasons I love programming.
+				</p>
+				<p data-fade>
+					I'm also a big fan of 80s pop culture and the cyberpunk aesthetic.
+				</p>
+			</div>
+		</div>
+
 	</div>
 </section>
 
 <script>
-	const animatedElements = document.querySelectorAll('[data-animate]');
+	const fadeEls = document.querySelectorAll('.about [data-fade]');
+	const slideEl = document.querySelector<HTMLElement>('.about [data-slide]');
 
-	const observer = new IntersectionObserver((entries) => {
-		entries.forEach((entry, index) => {
+	const fadeObs = new IntersectionObserver((entries) => {
+		entries.forEach((entry, i) => {
 			if (entry.isIntersecting) {
-				setTimeout(() => {
-					entry.target.classList.add('visible');
-				}, index * 150);
+				setTimeout(() => entry.target.classList.add('visible'), i * 130);
+				fadeObs.unobserve(entry.target);
 			}
 		});
-	}, {
-		threshold: 0.2,
-		rootMargin: '0px 0px -50px 0px'
-	});
+	}, { threshold: 0.15 });
 
-	animatedElements.forEach(el => observer.observe(el));
+	fadeEls.forEach(el => fadeObs.observe(el));
+
+	if (slideEl) {
+		const slideObs = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					entry.target.classList.add('visible');
+					slideObs.unobserve(entry.target);
+				}
+			});
+		}, { threshold: 0.1 });
+		slideObs.observe(slideEl);
+	}
 </script>
 
 <style>
-	.quien-soy {
-		position: relative;
-		z-index: 10;
-		min-height: 100vh;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background-color: #0a0a0a;
-		padding: 6rem 2rem;
+	.about {
+		padding: 7rem 3rem;
+		background-color: var(--bg);
 	}
 
-	.quien-soy-content {
-		max-width: 800px;
-		text-align: center;
+	.about-wrap {
+		max-width: 1100px;
+		margin: 0 auto;
 	}
 
-	.quien-soy-frase {
-		font-size: clamp(2rem, 5vw, 3.5rem);
-		font-weight: 300;
-		line-height: 1.2;
-		letter-spacing: -0.02em;
-		color: #fafafa;
-		margin: 0 0 2rem;
+	/* Section label */
+	.section-label {
+		font-family: 'Poppins', sans-serif;
+		font-size: 1.05rem;
+		font-weight: 600;
+		color: var(--accent-orange);
+		margin: 0 0 3.5rem;
+		letter-spacing: 0.04em;
 		opacity: 0;
-		transform: translateY(30px);
-		transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+		transform: translateY(16px);
+		transition: opacity 0.6s ease, transform 0.6s ease;
 	}
 
-	.quien-soy-descripcion {
-		font-size: clamp(1rem, 2vw, 1.25rem);
+	.section-label.visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	/* Grid */
+	.about-grid {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 4.5rem;
+		align-items: start;
+	}
+
+	/* Image column */
+	.about-img-col {
+		opacity: 0;
+		transform: translateX(-36px);
+		transition: opacity 0.85s ease, transform 0.85s ease;
+	}
+
+	.about-img-col.visible {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
+	.about-img {
+		width: 240px;
+		display: block;
+		border-radius: 12px;
+	}
+
+	/* Text column */
+	.about-text-col p {
+		font-family: 'Montserrat', sans-serif;
+		font-size: clamp(0.92rem, 1.6vw, 1.05rem);
 		font-weight: 400;
-		line-height: 1.7;
-		color: #a3a3a3;
-		margin: 0;
+		line-height: 1.85;
+		color: #c8d0e0;
+		margin: 0 0 1.5rem;
 		opacity: 0;
-		transform: translateY(30px);
-		transition: opacity 0.8s ease-out 0.15s, transform 0.8s ease-out 0.15s;
+		transform: translateY(18px);
+		transition: opacity 0.7s ease, transform 0.7s ease;
 	}
 
-	[data-animate].visible {
+	.about-text-col p:last-child { margin-bottom: 0; }
+
+	/* data-fade shared */
+	[data-fade] {
+		opacity: 0;
+		transform: translateY(18px);
+		transition: opacity 0.7s ease, transform 0.7s ease;
+	}
+
+	[data-fade].visible {
 		opacity: 1;
 		transform: translateY(0);
 	}
 
 	@media (max-width: 768px) {
-		.quien-soy {
-			padding: 4rem 1.5rem;
+		.about { padding: 5rem 1.5rem; }
+		.about-grid {
+			grid-template-columns: 1fr;
+			gap: 2.5rem;
 		}
-
-		.quien-soy-frase {
-			margin-bottom: 1.5rem;
-		}
+		.about-img { width: 200px; margin: 0 auto; }
 	}
 </style>
