@@ -1,8 +1,21 @@
 ---
 // Skills & Tech — album-cover style cards
 const albums = [
-	{ src: '/img/js-album.png',   alt: 'JavaScript ECMAScript', label: 'JavaScript' },
-	{ src: '/img/html5-album.png', alt: 'HTML5 Remarkable Hits', label: 'HTML5'      },
+	{ src: '/img/skills/js-album.png',    alt: 'JavaScript ECMAScript', label: 'JavaScript', back: '/img/skills/js-back.png' },
+	{ src: '/img/skills/html5-album.png', alt: 'HTML5 Remarkable Hits', label: 'HTML5' },
+	{ src: '/img/skills/css-album.png',  alt: 'CSS3 Styles & Beats', label: 'CSS3' },
+	{ src: '/img/skills/react-album.png', alt: 'ReactJS Remix', label: 'ReactJS' },
+	{ src: '/img/skills/node-album.png',  alt: 'Node.js Grooves', label: 'Node.js' },
+	{ src: '/img/skills/astro-album.png', alt: 'Astro Jam Sessions', label: 'Astro' },
+	{ src: '/img/skills/git-album.png',   alt: 'Git Version Control Hits', label: 'Git' },
+	{ src: '/img/skills/type-album.png',    alt: 'TypeScript Transitions', label: 'TypeScript' },
+	{ src: '/img/skills/npm-album.png',	alt: 'NPM Package Beats', label: 'NPM' },
+	{ src: '/img/skills/tailwind-album.png', alt: 'Tailwind CSS Vibes', label: 'Tailwind CSS' },
+	{ src: '/img/skills/web-album.png', alt: 'Web Components', label: 'Web Components' },
+];
+
+const singles = [
+	{ src: '/img/skills/sass.png', alt: 'Sass Styles', label: 'Sass' },
 ];
 ---
 
@@ -16,16 +29,42 @@ const albums = [
 				<div
 					class="album-card"
 					data-fade
-					style={`--delay: ${i * 0.12}s`}
+					style={`--delay: ${i * 0.12}s;`}
+					data-lightbox={album.back ?? null}
 				>
-					<img src={album.src} alt={album.alt} class="album-img" />
+					<div class="album-sleeve">
+						<!-- Vinyl behind the cover -->
+						<div class="vinyl-wrap">
+							<img src="/img/skills/vinil.svg" alt="" aria-hidden="true" class="vinyl" />
+						</div>
+						<!-- Album cover on top -->
+						<img src={album.src} alt={album.alt} class="album-img" />
+					</div>
 					<p class="album-name">{album.label}</p>
+				</div>
+			))}
+			{singles.map((item, i) => (
+				<div
+					class="skill-card"
+					data-fade
+					style={`--delay: ${(albums.length + i) * 0.12}s;`}
+				>
+					<div class="skill-img-wrap">
+						<img src={item.src} alt={item.alt} class="skill-img" />
+					</div>
+					<p class="album-name">{item.label}</p>
 				</div>
 			))}
 		</div>
 
 	</div>
 </section>
+
+<!-- Lightbox overlay -->
+<div class="lb-overlay" id="lb-overlay" aria-hidden="true">
+	<button class="lb-close" id="lb-close" aria-label="Cerrar">✕</button>
+	<img class="lb-img" id="lb-img" src="" alt="" />
+</div>
 
 <script>
 	const els = document.querySelectorAll('.skills [data-fade]');
@@ -43,6 +82,40 @@ const albums = [
 	}, { threshold: 0.1 });
 
 	els.forEach(el => obs.observe(el));
+
+	// Lightbox
+	const overlay  = document.getElementById('lb-overlay')!;
+	const lbImg    = document.getElementById('lb-img') as HTMLImageElement;
+	const lbClose  = document.getElementById('lb-close')!;
+
+	function openLightbox(src: string) {
+		lbImg.src = src;
+		overlay.classList.add('active');
+		overlay.setAttribute('aria-hidden', 'false');
+		document.body.style.overflow = 'hidden';
+	}
+
+	function closeLightbox() {
+		overlay.classList.remove('active');
+		overlay.setAttribute('aria-hidden', 'true');
+		document.body.style.overflow = '';
+	}
+
+	document.querySelectorAll<HTMLElement>('.album-card[data-lightbox]').forEach(card => {
+		card.style.cursor = 'pointer';
+		card.addEventListener('click', () => {
+			const src = card.dataset.lightbox;
+			if (src) openLightbox(src);
+		});
+	});
+
+	lbClose.addEventListener('click', closeLightbox);
+	overlay.addEventListener('click', (e) => {
+		if (e.target === overlay) closeLightbox();
+	});
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') closeLightbox();
+	});
 </script>
 
 <style>
@@ -70,38 +143,73 @@ const albums = [
 	.albums-row {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 2rem;
+		gap: 6rem;
 	}
 
 	/* Album card */
 	.album-card {
 		width: 180px;
 		cursor: default;
-		opacity: 0;
-		transform: translateY(28px);
-		transition:
-			opacity  0.65s ease,
-			transform 0.65s ease;
 	}
 
-	.album-card.visible {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	.album-img {
+	/* Sleeve: the visible square area — vinyl overflows to the right */
+	.album-sleeve {
+		position: relative;
 		width: 100%;
 		aspect-ratio: 1;
+	}
+
+	/* Vinyl wrapper handles the slide */
+	.vinyl-wrap {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		transform: translateX(0);
+		filter: drop-shadow(0 0 0px transparent);
+		transition:
+			transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+			filter   0.5s ease;
+	}
+
+	.album-sleeve:hover .vinyl-wrap {
+		transform: translateX(50%);
+	}
+
+	/* Vinyl image handles the spin */
+	.vinyl {
+		width: 100%;
+		height: 100%;
+		display: block;
+		border-radius: 50%;
+		animation: vinylSpin 3s linear infinite;
+		animation-play-state: paused;
+	}
+
+	.album-sleeve:hover .vinyl {
+		animation-play-state: running;
+	}
+
+	@keyframes vinylSpin {
+		to { transform: rotate(360deg); }
+	}
+
+	/* Album cover on top */
+	.album-img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
 		object-fit: cover;
 		border-radius: 6px;
 		display: block;
-		transition: transform 0.3s ease, box-shadow 0.3s ease;
+		z-index: 1;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+		transition: transform 0.4s ease, box-shadow 0.4s ease;
 	}
 
-	.album-card:hover .album-img {
-		transform: translateY(-8px) scale(1.03);
-		box-shadow: 0 14px 32px rgba(0, 0, 0, 0.6);
+	.album-sleeve:hover .album-img {
+		transform: translateY(-6px);
+		box-shadow: 0 14px 32px rgba(0, 0, 0, 0.65);
 	}
 
 	.album-name {
@@ -109,6 +217,32 @@ const albums = [
 		color: var(--text-muted);
 		text-align: center;
 		margin: 0.7rem 0 0;
+	}
+
+	/* Standalone skill card (no vinyl) */
+	.skill-card {
+		width: 180px;
+		cursor: default;
+	}
+
+	.skill-img-wrap {
+		aspect-ratio: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.skill-img {
+		width: 180px;
+		height: 270px;
+		object-fit: contain;
+		display: block;
+		transition: transform 0.4s ease;
+		border-radius: 10px;
+	}
+
+	.skill-card:hover .skill-img {
+		transform: translateY(-6px);
 	}
 
 	/* data-fade shared */
@@ -126,5 +260,57 @@ const albums = [
 	@media (max-width: 640px) {
 		.skills { padding: 5rem 1.5rem 6rem; }
 		.album-card { width: 140px; }
+	}
+
+	/* Lightbox */
+	:global(.lb-overlay) {
+		position: fixed;
+		inset: 0;
+		z-index: 999;
+		background: rgba(0, 0, 0, 0.85);
+		backdrop-filter: blur(6px);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.3s ease;
+	}
+
+	:global(.lb-overlay.active) {
+		opacity: 1;
+		pointer-events: all;
+	}
+
+	:global(.lb-img) {
+		max-width: 90vw;
+		max-height: 85vh;
+		object-fit: contain;
+		border-radius: 8px;
+		box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
+		transform: scale(0.88);
+		transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+
+	:global(.lb-overlay.active .lb-img) {
+		transform: scale(1);
+	}
+
+	:global(.lb-close) {
+		position: absolute;
+		top: 1.25rem;
+		right: 1.5rem;
+		background: none;
+		border: none;
+		color: #fff;
+		font-size: 1.4rem;
+		cursor: pointer;
+		opacity: 0.7;
+		transition: opacity 0.2s ease;
+		line-height: 1;
+	}
+
+	:global(.lb-close:hover) {
+		opacity: 1;
 	}
 </style>

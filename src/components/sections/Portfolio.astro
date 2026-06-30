@@ -1,0 +1,317 @@
+---
+// Portfolio section
+const projects = [
+	{
+		title: 'Project One',
+		desc: 'Miniwidgets',
+		tags: ['React', 'Node.js'],
+		href: '#',
+		src: '',
+	},
+	{
+		title: 'Project Two',
+		desc: 'ESP32',
+		tags: ['Astro', 'TypeScript'],
+		href: '#',
+		src: '',
+	},
+	{
+		title: 'Project Three',
+		desc: 'Portfolio terminal',
+		tags: ['CSS3', 'JavaScript'],
+		href: '#',
+		src: '',
+	},
+	{
+		title: 'Project Four',
+		desc: 'algun connect',
+		tags: ['CSS3', 'JavaScript'],
+		href: '#',
+		src: '',
+	},
+	{
+		title: 'Project Five',
+		desc: 'revisar algo de depredador apps',
+		tags: ['CSS3', 'JavaScript'],
+		href: '#',
+		src: '',
+	},
+];
+---
+
+<section class="portfolio" id="portfolio">
+	<div class="portfolio-wrap">
+
+		<div class="portfolio-header">
+			<p class="section-label" id="portfolio-label">≥ Portfolio</p>
+			<img
+				src="/img/portfolio/avatar-dev.png"
+				alt="Avatar dev"
+				class="portfolio-avatar"
+				id="portfolio-avatar"
+			/>
+		</div>
+
+		<div class="projects-grid">
+			{projects.map((p, i) => (
+				<a
+					href={p.href}
+					class="project-card"
+					data-fade
+					style={`--delay: ${i * 0.12}s;`}
+				>
+					<div class="project-img-wrap">
+						{p.src
+							? <img src={p.src} alt={p.title} class="project-img" />
+							: <div class="project-img-placeholder" />
+						}
+					</div>
+					<div class="project-info">
+						<h3 class="project-title">{p.title}</h3>
+						<p class="project-desc">{p.desc}</p>
+						<ul class="project-tags">
+							{p.tags.map(tag => <li>{tag}</li>)}
+						</ul>
+					</div>
+				</a>
+			))}
+		</div>
+
+	</div>
+</section>
+
+<script>
+	import { gsap } from 'gsap';
+
+	const labelEl = document.querySelector<HTMLElement>('#portfolio-label');
+	if (labelEl) {
+		const text = labelEl.textContent ?? '';
+		labelEl.innerHTML = [...text]
+			.map(ch => `<span class="pl">${ch === ' ' ? '&nbsp;' : ch}</span>`)
+			.join('');
+		gsap.set('.pl', { opacity: 0, y: 18, rotateX: -80 });
+	}
+
+	const fadeEls = Array.from(document.querySelectorAll<HTMLElement>('.portfolio [data-fade]'));
+	const avatarEl = document.getElementById('portfolio-avatar') as HTMLElement | null;
+
+	const visObs = new IntersectionObserver((entries) => {
+		entries.forEach(entry => {
+			const delay = parseFloat(
+				(entry.target as HTMLElement).style.getPropertyValue('--delay') || '0'
+			) * 1000;
+			if (entry.isIntersecting) {
+				setTimeout(() => (entry.target as HTMLElement).classList.add('visible'), delay);
+			} else {
+				(entry.target as HTMLElement).classList.remove('visible');
+			}
+		});
+	}, { threshold: 0.1 });
+
+	fadeEls.forEach(el => visObs.observe(el));
+
+	if (avatarEl) {
+		const avatarObs = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				if (entry.isIntersecting) {
+					avatarEl.classList.add('visible');
+				} else {
+					avatarEl.classList.remove('visible');
+				}
+			});
+		}, { threshold: 0.15 });
+		avatarObs.observe(avatarEl);
+	}
+
+	if (labelEl) {
+		const labelObs = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				const letters = entry.target.querySelectorAll<HTMLElement>('.pl');
+				if (entry.isIntersecting) {
+					gsap.to(letters, {
+						opacity: 1, y: 0, rotateX: 0,
+						duration: 0.5, stagger: 0.07,
+						ease: 'power3.out',
+					});
+				} else {
+					gsap.set(letters, { opacity: 0, y: 18, rotateX: -80 });
+				}
+			});
+		}, { threshold: 0.15 });
+		labelObs.observe(labelEl);
+	}
+</script>
+
+<style>
+	.portfolio {
+		padding: 7rem 3rem;
+		background-color: var(--bg);
+	}
+
+	.portfolio-wrap {
+		max-width: 1100px;
+		margin: 0 auto;
+	}
+
+	/* Header row: label + avatar */
+	.portfolio-header {
+		position: relative;
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;
+		margin: 0 0 3.5rem;
+	}
+
+	.section-label {
+		font-family: var(--font-main);
+		font-size: 1rem;
+		font-weight: 500;
+		color: var(--accent-orange);
+		margin: 0;
+		letter-spacing: 0.04em;
+		perspective: 600px;
+	}
+
+	/* Avatar */
+	.portfolio-avatar {
+		height: 180px;
+		width: auto;
+		display: block;
+		opacity: 0;
+		transform: translateY(24px);
+		transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+		animation: float 3.6s ease-in-out infinite;
+		animation-play-state: paused;
+		filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.5));
+	}
+
+	.portfolio-avatar.visible {
+		opacity: 1;
+		transform: translateY(0);
+		animation-play-state: running;
+	}
+
+	@keyframes float {
+		0%   { transform: translateY(0); }
+		50%  { transform: translateY(-10px); }
+		100% { transform: translateY(0); }
+	}
+
+	.pl {
+		display: inline-block;
+		will-change: transform, opacity;
+	}
+
+	/* Grid */
+	.projects-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+		gap: 2rem;
+	}
+
+	/* Card */
+	.project-card {
+		display: flex;
+		flex-direction: column;
+		background: rgba(255, 255, 255, 0.03);
+		border: 1px solid rgba(255, 255, 255, 0.07);
+		border-radius: 12px;
+		overflow: hidden;
+		text-decoration: none;
+		transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+	}
+
+	.project-card:hover {
+		border-color: var(--accent-orange);
+		transform: translateY(-4px);
+		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+	}
+
+	/* Image */
+	.project-img-wrap {
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		overflow: hidden;
+		background: rgba(255, 255, 255, 0.05);
+	}
+
+	.project-img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+		transition: transform 0.4s ease;
+	}
+
+	.project-card:hover .project-img {
+		transform: scale(1.04);
+	}
+
+	.project-img-placeholder {
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+	}
+
+	/* Info */
+	.project-info {
+		padding: 1.25rem 1.5rem 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+	}
+
+	.project-title {
+		font-family: var(--font-main);
+		font-size: 1rem;
+		font-weight: 600;
+		color: #e8eaf0;
+		margin: 0;
+	}
+
+	.project-desc {
+		font-size: 0.875rem;
+		line-height: 1.6;
+		color: #8a93a8;
+		margin: 0;
+	}
+
+	/* Tags */
+	.project-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		list-style: none;
+		margin: 0.4rem 0 0;
+		padding: 0;
+	}
+
+	.project-tags li {
+		font-family: var(--font-main);
+		font-size: 0.72rem;
+		font-weight: 500;
+		color: var(--accent-orange);
+		background: rgba(255, 120, 50, 0.1);
+		border: 1px solid rgba(255, 120, 50, 0.25);
+		border-radius: 4px;
+		padding: 0.15rem 0.55rem;
+		letter-spacing: 0.03em;
+	}
+
+	/* data-fade */
+	[data-fade] {
+		opacity: 0;
+		transform: translateY(18px);
+		transition: opacity 0.7s ease, transform 0.7s ease;
+	}
+
+	[data-fade].visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	@media (max-width: 768px) {
+		.portfolio { padding: 5rem 1.5rem; }
+		.projects-grid { grid-template-columns: 1fr; }
+	}
+</style>

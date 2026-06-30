@@ -12,7 +12,12 @@ const icons = [
 	{ name: 'Tailwind',    url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg', cls: 'i-tailwind' },
 	{ name: 'Sass',        url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sass/sass-original.svg',             cls: 'i-sass'      },
 	{ name: 'CSS3',        url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg',             cls: 'i-css3'      },
-	{ name: 'Bootstrap',   url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg',   cls: 'i-bootstrap' },
+	{ name: 'Bootstrap',      url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg',            cls: 'i-bootstrap'      },
+	{ name: 'Astro',          url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/astro/astro-original.svg',                    cls: 'i-astro'          },
+	{ name: 'Nginx',          url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nginx/nginx-original.svg',                    cls: 'i-nginx'          },
+	{ name: 'Ubuntu',         url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/ubuntu/ubuntu-original.svg',                  cls: 'i-ubuntu'         },
+	{ name: 'PM2',            url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/pm2/pm2-original.svg',                        cls: 'i-pm2'            },
+	{ name: 'Docker',         url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg',                  cls: 'i-docker'         },
 ];
 ---
 
@@ -63,7 +68,7 @@ const icons = [
 	gsap.set('#h-greeting', { opacity: 0, y: 28 });
 	gsap.set('.ch',         { opacity: 0, y: 40, rotateX: -70, filter: 'blur(6px)' });
 	gsap.set('#h-subtitle', { opacity: 0, y: 20 });
-	gsap.set('#h-badge',    { opacity: 0, scale: 0.75 });
+	gsap.set('#h-badge',    { opacity: 0, scale: 0.75, xPercent: -50, yPercent: -50 });
 	gsap.set('.ticon',      { opacity: 0, scale: 0.4 });
 
 	const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
@@ -177,7 +182,6 @@ const icons = [
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		transform: translate(-50%, -50%);
 		width: 230px;
 		height: auto;
 		z-index: 10;
@@ -224,14 +228,19 @@ const icons = [
 	.i-firebase  { top:  7%; left: 53%; }
 	.i-figma     { top: 17%; left: 71%; }
 	.i-react     { top: 40%; left:  2%; }
-	.i-js        { top: 63%; left: 11%; }
+	.i-js        { top: 58%; left: 10%; }
 	.i-mui       { top: 40%; left: 81%; }
 	.i-blender   { top: 29%; left: 91%; }
 	.i-ts        { top: 79%; left:  6%; }
 	.i-tailwind  { top: 84%; left: 24%; }
 	.i-sass      { top: 87%; left: 43%; }
 	.i-css3      { top: 81%; left: 62%; }
-	.i-bootstrap { top: 77%; left: 79%; }
+	.i-bootstrap      { top: 77%; left: 79%; }
+	.i-astro          { top: 14%; left: 84%; background-color: #fff; border-radius: 6px; padding: 2px; }
+	.i-nginx          { top: 23%; left: 5%; }
+	.i-ubuntu         { top: 54%; left: 93%; }
+	.i-pm2            { top: 17%; left: 28%; }
+	.i-docker         { top: 58%; left: 78%; }
 
 	/* ── Responsive ── */
 	@media (max-width: 1024px) {
