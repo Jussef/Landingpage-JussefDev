@@ -1,316 +1,93 @@
 ---
-// Skills & Tech — album-cover style cards
-const albums = [
-	{ src: '/img/skills/js-album.png',    alt: 'JavaScript ECMAScript', label: 'JavaScript', back: '/img/skills/js-back.png' },
-	{ src: '/img/skills/html5-album.png', alt: 'HTML5 Remarkable Hits', label: 'HTML5', back: '/img/skills/html-back.png' },
-	{ src: '/img/skills/css-album.png',  alt: 'CSS3 Styles & Beats', label: 'CSS3' },
-	{ src: '/img/skills/react-album.png', alt: 'ReactJS Remix', label: 'ReactJS' },
-	{ src: '/img/skills/node-album.png',  alt: 'Node.js Grooves', label: 'Node.js' },
-	{ src: '/img/skills/astro-album.png', alt: 'Astro Jam Sessions', label: 'Astro' },
-	{ src: '/img/skills/git-album.png',   alt: 'Git Version Control Hits', label: 'Git' },
-	{ src: '/img/skills/type-album.png',    alt: 'TypeScript Transitions', label: 'TypeScript' },
-	{ src: '/img/skills/npm-album.png',	alt: 'NPM Package Beats', label: 'NPM' },
-	{ src: '/img/skills/tailwind-album.png', alt: 'Tailwind CSS Vibes', label: 'Tailwind CSS' },
-	{ src: '/img/skills/web-album.png', alt: 'Web Components', label: 'Web Components' },
+// Ambient background layer — floating tech icons that drift up at their own
+// speed while the page scrolls through About + Portfolio (see index.astro,
+// where this renders as a sibling behind those sections inside .parallax-zone).
+const skills = [
+	{ src: '/img/skills/js-album.png',       alt: 'JavaScript',      speed: 0.7 },
+	{ src: '/img/skills/html5-album.png',    alt: 'HTML5',           speed: 1.6 },
+	{ src: '/img/skills/css-album.png',      alt: 'CSS3',            speed: 1.0 },
+	{ src: '/img/skills/react-album.png',    alt: 'ReactJS',         speed: 1.8 },
+	{ src: '/img/skills/node-album.png',     alt: 'Node.js',         speed: 0.9 },
+	{ src: '/img/skills/astro-album.png',    alt: 'Astro',           speed: 1.3 },
+	{ src: '/img/skills/git-album.png',      alt: 'Git',             speed: 1.1 },
+	{ src: '/img/skills/type-album.png',     alt: 'TypeScript',      speed: 1.7 },
+	{ src: '/img/skills/npm-album.png',      alt: 'NPM',             speed: 0.8 },
+	{ src: '/img/skills/tailwind-album.png', alt: 'Tailwind CSS',    speed: 1.4 },
+	{ src: '/img/skills/web-album.png',      alt: 'Web Components',  speed: 1.9 },
+	{ src: '/img/skills/sass.png',           alt: 'Sass',            speed: 1.0 },
 ];
 
-const singles = [
-	{ src: '/img/skills/sass.png', alt: 'Sass Styles', label: 'Sass' },
-];
+const columnCount = 3;
+const leftByCol = [2, 38, 78];
+const rowsPerCol = Math.ceil(skills.length / columnCount);
+
+const positioned = skills.map((item, i) => {
+	const col = i % columnCount;
+	const row = Math.floor(i / columnCount);
+	const topPct = rowsPerCol > 1 ? (row / (rowsPerCol - 1)) * 94 : 0;
+	const jitter = col === 1 ? 5 : 0;
+	return { ...item, topPct: topPct + jitter, leftPct: leftByCol[col] };
+});
 ---
 
-<section class="skills" id="skills">
-	<div class="skills-wrap">
-
-		<p class="section-label" data-fade>≥ Skills &amp; technologist</p>
-
-		<div class="albums-row">
-			{albums.map((album, i) => (
-				<div
-					class="album-card"
-					data-fade
-					style={`--delay: ${i * 0.12}s;`}
-					data-lightbox={album.back ?? null}
-				>
-					<div class="album-sleeve">
-						<!-- Vinyl behind the cover -->
-						<div class="vinyl-wrap">
-							<img src="/img/skills/vinil.svg" alt="" aria-hidden="true" class="vinyl" />
-						</div>
-						<!-- Album cover on top -->
-						<img src={album.src} alt={album.alt} class="album-img" />
-					</div>
-					<p class="album-name">{album.label}</p>
-				</div>
-			))}
-			{singles.map((item, i) => (
-				<div
-					class="skill-card"
-					data-fade
-					style={`--delay: ${(albums.length + i) * 0.12}s;`}
-				>
-					<div class="skill-img-wrap">
-						<img src={item.src} alt={item.alt} class="skill-img" />
-					</div>
-					<p class="album-name">{item.label}</p>
-				</div>
-			))}
-		</div>
-
-	</div>
-</section>
-
-<!-- Lightbox overlay -->
-<div class="lb-overlay" id="lb-overlay" aria-hidden="true">
-	<button class="lb-close" id="lb-close" aria-label="Cerrar">✕</button>
-	<img class="lb-img" id="lb-img" src="" alt="" />
+<div class="skills-bg" aria-hidden="true">
+	{positioned.map((item) => (
+		<img
+			src={item.src}
+			alt=""
+			class="skill-bg-img"
+			data-speed={item.speed}
+			style={`top:${item.topPct}%; left:${item.leftPct}%;`}
+			loading="lazy"
+		/>
+	))}
 </div>
 
 <script>
-	const els = document.querySelectorAll('.skills [data-fade]');
+	import { gsap } from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-	const obs = new IntersectionObserver((entries) => {
-		entries.forEach(entry => {
-			if (entry.isIntersecting) {
-				const delay = parseFloat(
-					(entry.target as HTMLElement).style.getPropertyValue('--delay') || '0'
-				) * 1000;
-				setTimeout(() => entry.target.classList.add('visible'), delay);
-				obs.unobserve(entry.target);
-			}
+	gsap.registerPlugin(ScrollTrigger);
+
+	// Big, exaggerated parallax — each icon travels a different distance
+	// (based on its own data-speed) across the whole About→Portfolio span.
+	gsap.utils.toArray<HTMLElement>('.skill-bg-img').forEach((img) => {
+		const speed = parseFloat(img.dataset.speed ?? '1');
+		gsap.to(img, {
+			yPercent: -320 * speed,
+			ease: 'none',
+			scrollTrigger: {
+				trigger: '.parallax-zone',
+				start: '500px bottom',
+				end: 'bottom top',
+				scrub: 0.6,
+			},
 		});
-	}, { threshold: 0.1 });
-
-	els.forEach(el => obs.observe(el));
-
-	// Lightbox
-	const overlay  = document.getElementById('lb-overlay')!;
-	const lbImg    = document.getElementById('lb-img') as HTMLImageElement;
-	const lbClose  = document.getElementById('lb-close')!;
-
-	function openLightbox(src: string) {
-		lbImg.src = src;
-		overlay.classList.add('active');
-		overlay.setAttribute('aria-hidden', 'false');
-		document.body.style.overflow = 'hidden';
-	}
-
-	function closeLightbox() {
-		overlay.classList.remove('active');
-		overlay.setAttribute('aria-hidden', 'true');
-		document.body.style.overflow = '';
-	}
-
-	document.querySelectorAll<HTMLElement>('.album-card[data-lightbox]').forEach(card => {
-		card.style.cursor = 'pointer';
-		card.addEventListener('click', () => {
-			const src = card.dataset.lightbox;
-			if (src) openLightbox(src);
-		});
-	});
-
-	lbClose.addEventListener('click', closeLightbox);
-	overlay.addEventListener('click', (e) => {
-		if (e.target === overlay) closeLightbox();
-	});
-	document.addEventListener('keydown', (e) => {
-		if (e.key === 'Escape') closeLightbox();
 	});
 </script>
 
 <style>
-	.skills {
-		padding: 7rem 3rem 9rem;
-		background-color: var(--bg);
-	}
-
-	.skills-wrap {
-		max-width: 1100px;
-		margin: 0 auto;
-	}
-
-	/* Section label */
-	.section-label {
-		font-family: var(--font-main);
-		font-size: 1rem;
-		font-weight: 500;
-		color: var(--accent-orange);
-		margin: 0 0 3.5rem;
-		letter-spacing: 0.04em;
-	}
-
-	/* Album row */
-	.albums-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 6rem;
-	}
-
-	/* Album card */
-	.album-card {
-		width: 180px;
-		cursor: default;
-	}
-
-	/* Sleeve: the visible square area — vinyl overflows to the right */
-	.album-sleeve {
-		position: relative;
-		width: 100%;
-		aspect-ratio: 1;
-	}
-
-	/* Vinyl wrapper handles the slide */
-	.vinyl-wrap {
+	.skills-bg {
 		position: absolute;
 		inset: 0;
-		z-index: 0;
-		transform: translateX(0);
-		filter: drop-shadow(0 0 0px transparent);
-		transition:
-			transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-			filter   0.5s ease;
-	}
-
-	.album-sleeve:hover .vinyl-wrap {
-		transform: translateX(50%);
-	}
-
-	/* Vinyl image handles the spin */
-	.vinyl {
-		width: 100%;
-		height: 100%;
-		display: block;
-		border-radius: 50%;
-		animation: vinylSpin 3s linear infinite;
-		animation-play-state: paused;
-	}
-
-	.album-sleeve:hover .vinyl {
-		animation-play-state: running;
-	}
-
-	@keyframes vinylSpin {
-		to { transform: rotate(360deg); }
-	}
-
-	/* Album cover on top */
-	.album-img {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		border-radius: 6px;
-		display: block;
-		z-index: 1;
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-		transition: transform 0.4s ease, box-shadow 0.4s ease;
-	}
-
-	.album-sleeve:hover .album-img {
-		transform: translateY(-6px);
-		box-shadow: 0 14px 32px rgba(0, 0, 0, 0.65);
-	}
-
-	.album-name {
-		font-size: 0.82rem;
-		color: var(--text-muted);
-		text-align: center;
-		margin: 0.7rem 0 0;
-	}
-
-	/* Standalone skill card (no vinyl) */
-	.skill-card {
-		width: 180px;
-		cursor: default;
-	}
-
-	.skill-img-wrap {
-		aspect-ratio: 1;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.skill-img {
-		width: 180px;
-		height: 270px;
-		object-fit: contain;
-		display: block;
-		transition: transform 0.4s ease;
-		border-radius: 10px;
-	}
-
-	.skill-card:hover .skill-img {
-		transform: translateY(-6px);
-	}
-
-	/* data-fade shared */
-	[data-fade] {
-		opacity: 0;
-		transform: translateY(18px);
-		transition: opacity 0.7s ease, transform 0.7s ease;
-	}
-
-	[data-fade].visible {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	@media (max-width: 640px) {
-		.skills { padding: 5rem 1.5rem 6rem; }
-		.album-card { width: 140px; }
-	}
-
-	/* Lightbox */
-	:global(.lb-overlay) {
-		position: fixed;
-		inset: 0;
-		z-index: 999;
-		background: rgba(0, 0, 0, 0.85);
-		backdrop-filter: blur(6px);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		opacity: 0;
+		z-index: -1;
+		overflow: hidden;
 		pointer-events: none;
-		transition: opacity 0.3s ease;
 	}
 
-	:global(.lb-overlay.active) {
-		opacity: 1;
-		pointer-events: all;
-	}
-
-	:global(.lb-img) {
-		max-width: 90vw;
-		max-height: 85vh;
-		object-fit: contain;
-		border-radius: 8px;
-		box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7);
-		transform: scale(0.88);
-		transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-	}
-
-	:global(.lb-overlay.active .lb-img) {
-		transform: scale(1);
-	}
-
-	:global(.lb-close) {
+	.skill-bg-img {
 		position: absolute;
-		top: 1.25rem;
-		right: 1.5rem;
-		background: none;
-		border: none;
-		color: #fff;
-		font-size: 1.4rem;
-		cursor: pointer;
-		opacity: 0.7;
-		transition: opacity 0.2s ease;
-		line-height: 1;
+		width: min(320px, 30vw);
+		object-fit: contain;
+		opacity: 0.5;
+		filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.6));
+		will-change: transform;
 	}
 
-	:global(.lb-close:hover) {
-		opacity: 1;
+	@media (max-width: 768px) {
+		.skill-bg-img {
+			width: min(170px, 42vw);
+			opacity: 0.4;
+		}
 	}
 </style>

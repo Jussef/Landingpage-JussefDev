@@ -22,6 +22,8 @@ const icons = [
 ---
 
 <section class="hero" id="hero">
+	<div class="synth-grid" id="synth-grid" aria-hidden="true"></div>
+
 	<div class="hero-container">
 
 		<!-- ── Left column ── -->
@@ -31,7 +33,7 @@ const icons = [
 				<span class="ch">J</span><span class="ch">u</span><span class="ch">s</span><span class="ch">s</span><span class="ch">e</span><span class="ch">f</span>
 			</h1>
 			<p class="subtitle" id="h-subtitle">
-				<span class="sym">≥</span><span class="front"> Frontend</span><span class="eng"> Engineer</span>
+				<span class="sym">≥</span><span class="front"> Software</span><span class="eng"> Engineer</span>
 			</p>
 		</div>
 
@@ -64,6 +66,55 @@ const icons = [
 
 <script>
 	import { gsap } from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	// Synthwave grid — flies toward viewer as you scroll through the hero, fades out on exit
+	gsap.to('#synth-grid', {
+		backgroundPositionY: '+=120px',
+		ease: 'none',
+		scrollTrigger: {
+			trigger: '.hero',
+			start: 'top top',
+			end: 'bottom top',
+			scrub: 0.6,
+		},
+	});
+
+	gsap.to('#synth-grid', {
+		opacity: 0,
+		y: -60,
+		ease: 'none',
+		scrollTrigger: {
+			trigger: '.hero',
+			start: '30% top',
+			end: 'bottom top',
+			scrub: 0.6,
+		},
+	});
+
+	// Exit animation: greeting + subtitle slide out to the left, name letters fly up —
+	// each letter travels a different distance so they read as different speeds.
+	const letters = gsap.utils.toArray<HTMLElement>('.ch');
+
+	gsap.timeline({
+		scrollTrigger: {
+			trigger: '.hero',
+			start: 'top top',
+			end: 'bottom top',
+			scrub: 0.6,
+		},
+	})
+		.to('#h-greeting', { opacity: 0, x: -260, ease: 'none' }, 0)
+		.to(letters, {
+			opacity: 0,
+			y: (i) => -140 - i * 55,
+			rotate: (i) => (i % 2 === 0 ? -12 : 12),
+			ease: 'none',
+			stagger: 0.06,
+		}, 0)
+		.to('#h-subtitle', { opacity: 0, x: -260, ease: 'none' }, 0);
 
 	gsap.set('#h-greeting', { opacity: 0, y: 28 });
 	gsap.set('.ch',         { opacity: 0, y: 40, rotateX: -70, filter: 'blur(6px)' });
@@ -102,13 +153,17 @@ const icons = [
 <style>
 	/* ── Section ── */
 	.hero {
+		position: relative;
 		min-height: 100vh;
 		display: flex;
 		align-items: center;
 		padding: 7rem 3rem 3rem;
+		overflow: hidden;
 	}
 
 	.hero-container {
+		position: relative;
+		z-index: 1;
 		max-width: 1200px;
 		margin: 0 auto;
 		width: 100%;
@@ -116,6 +171,30 @@ const icons = [
 		grid-template-columns: 1fr 1.25fr;
 		gap: 3rem;
 		align-items: center;
+	}
+
+	/* ── Synthwave grid + sun (parallax on scroll) ── */
+	.synth-grid {
+		position: absolute;
+		left: -10%;
+		right: -10%;
+		bottom: -15%;
+		height: 55%;
+		z-index: 0;
+		pointer-events: none;
+		background-image:
+			repeating-linear-gradient(to right, rgba(45, 212, 192, 0.4) 0 1px, transparent 1px 64px),
+			repeating-linear-gradient(to bottom, rgba(45, 212, 192, 0.4) 0 1px, transparent 1px 44px);
+		background-position: center top;
+		transform: perspective(320px) rotateX(68deg);
+		transform-origin: center top;
+		-webkit-mask-image: linear-gradient(to top, black 0%, transparent 82%);
+		mask-image: linear-gradient(to top, black 0%, transparent 82%);
+		opacity: 0.55;
+	}
+
+	@media (max-width: 600px) {
+		.synth-grid { height: 40%; }
 	}
 
 	/* ── Left column ── */

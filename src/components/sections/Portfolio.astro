@@ -52,7 +52,10 @@ const projects = [
 			/>
 		</div>
 
-		<div class="projects-grid">
+	</div>
+
+	<div class="projects-track-wrap" id="projects-track-wrap">
+		<div class="projects-track" id="projects-track">
 			{projects.map((p, i) => (
 				<a
 					href={p.href}
@@ -76,12 +79,37 @@ const projects = [
 				</a>
 			))}
 		</div>
-
 	</div>
 </section>
 
 <script>
 	import { gsap } from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	// Pin the section and scrub the project track horizontally as the user scrolls
+	const track     = document.querySelector<HTMLElement>('#projects-track');
+	const trackWrap = document.querySelector<HTMLElement>('#projects-track-wrap');
+
+	if (track && trackWrap) {
+		const getScrollAmount = () => Math.max(0, track.scrollWidth - trackWrap.clientWidth);
+
+		const horizontalTween = gsap.to(track, {
+			x: () => -getScrollAmount(),
+			ease: 'none',
+		});
+
+		ScrollTrigger.create({
+			trigger: '.portfolio',
+			start: 'top top',
+			end: () => `+=${getScrollAmount()}`,
+			pin: true,
+			animation: horizontalTween,
+			scrub: 1,
+			invalidateOnRefresh: true,
+		});
+	}
 
 	const labelEl = document.querySelector<HTMLElement>('#portfolio-label');
 	if (labelEl) {
@@ -144,13 +172,15 @@ const projects = [
 
 <style>
 	.portfolio {
-		padding: 7rem 3rem;
-		background-color: var(--bg);
+		position: relative;
+		padding: 7rem 0;
+		overflow: hidden;
 	}
 
 	.portfolio-wrap {
 		max-width: 1100px;
 		margin: 0 auto;
+		padding: 0 3rem;
 	}
 
 	/* Header row: label + avatar */
@@ -202,17 +232,27 @@ const projects = [
 		will-change: transform, opacity;
 	}
 
-	/* Grid */
-	.projects-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+	/* Horizontal pinned track */
+	.projects-track-wrap {
+		width: 100%;
+		overflow: hidden;
+		margin-top: 3.5rem;
+	}
+
+	.projects-track {
+		display: flex;
 		gap: 2rem;
+		width: max-content;
+		padding: 0 3rem;
+		will-change: transform;
 	}
 
 	/* Card */
 	.project-card {
 		display: flex;
 		flex-direction: column;
+		flex: 0 0 auto;
+		width: min(380px, 82vw);
 		background: rgba(255, 255, 255, 0.03);
 		border: 1px solid rgba(255, 255, 255, 0.07);
 		border-radius: 12px;
@@ -311,7 +351,8 @@ const projects = [
 	}
 
 	@media (max-width: 768px) {
-		.portfolio { padding: 5rem 1.5rem; }
-		.projects-grid { grid-template-columns: 1fr; }
+		.portfolio { padding: 5rem 0; }
+		.portfolio-wrap { padding: 0 1.5rem; }
+		.projects-track { padding: 0 1.5rem; }
 	}
 </style>
