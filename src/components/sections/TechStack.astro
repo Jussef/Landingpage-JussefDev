@@ -3,30 +3,32 @@
 // speed while the page scrolls through About + Portfolio (see index.astro,
 // where this renders as a sibling behind those sections inside .parallax-zone).
 const skills = [
-	{ src: '/img/skills/js-album.png',       alt: 'JavaScript',      speed: 0.7 },
-	{ src: '/img/skills/html5-album.png',    alt: 'HTML5',           speed: 1.6 },
-	{ src: '/img/skills/css-album.png',      alt: 'CSS3',            speed: 1.0 },
-	{ src: '/img/skills/react-album.png',    alt: 'ReactJS',         speed: 1.8 },
-	{ src: '/img/skills/node-album.png',     alt: 'Node.js',         speed: 0.9 },
-	{ src: '/img/skills/astro-album.png',    alt: 'Astro',           speed: 1.3 },
-	{ src: '/img/skills/git-album.png',      alt: 'Git',             speed: 1.1 },
-	{ src: '/img/skills/type-album.png',     alt: 'TypeScript',      speed: 1.7 },
-	{ src: '/img/skills/npm-album.png',      alt: 'NPM',             speed: 0.8 },
-	{ src: '/img/skills/tailwind-album.png', alt: 'Tailwind CSS',    speed: 1.4 },
-	{ src: '/img/skills/web-album.png',      alt: 'Web Components',  speed: 1.9 },
-	{ src: '/img/skills/sass.png',           alt: 'Sass',            speed: 1.0 },
+	{ src: '/img/skills/js-album.png',       alt: 'JavaScript',      speed: 1.5 },
+	{ src: '/img/skills/html5-album.png',    alt: 'HTML5',           speed: 1.5 },
+	{ src: '/img/skills/css-album.png',      alt: 'CSS3',            speed: 1.5 },
+	{ src: '/img/skills/react-album.png',    alt: 'ReactJS',         speed: 1.5 },
+	{ src: '/img/skills/node-album.png',     alt: 'Node.js',         speed: 1.5 },
+	{ src: '/img/skills/astro-album.png',    alt: 'Astro',           speed: 1.5 },
+	{ src: '/img/skills/git-album.png',      alt: 'Git',             speed: 1.5 },
+	{ src: '/img/skills/type-album.png',     alt: 'TypeScript',      speed: 1.5 },
+	{ src: '/img/skills/npm-album.png',      alt: 'NPM',             speed: 1.5 },
+	{ src: '/img/skills/tailwind-album.png', alt: 'Tailwind CSS',    speed: 1.5 },
+	{ src: '/img/skills/web-album.png',      alt: 'Web Components',  speed: 1.5 },
+	{ src: '/img/skills/sass.png',           alt: 'Sass',            speed: 1 },
 ];
 
-const columnCount = 3;
-const leftByCol = [2, 38, 78];
+// Only two columns — hugging the left and right edges — so the center
+// column stays clear for the About text / Portfolio cards.
+const columnCount = 2;
+const sideByCol: ('left' | 'right')[] = ['left', 'right'];
+const edgeInsetPct = 3;
 const rowsPerCol = Math.ceil(skills.length / columnCount);
 
 const positioned = skills.map((item, i) => {
 	const col = i % columnCount;
 	const row = Math.floor(i / columnCount);
 	const topPct = rowsPerCol > 1 ? (row / (rowsPerCol - 1)) * 94 : 0;
-	const jitter = col === 1 ? 5 : 0;
-	return { ...item, topPct: topPct + jitter, leftPct: leftByCol[col] };
+	return { ...item, topPct, side: sideByCol[col] };
 });
 ---
 
@@ -37,7 +39,7 @@ const positioned = skills.map((item, i) => {
 			alt=""
 			class="skill-bg-img"
 			data-speed={item.speed}
-			style={`top:${item.topPct}%; left:${item.leftPct}%;`}
+			style={`top:${item.topPct}%; ${item.side}:${edgeInsetPct}%;`}
 			loading="lazy"
 		/>
 	))}
@@ -79,15 +81,14 @@ const positioned = skills.map((item, i) => {
 		position: absolute;
 		width: min(320px, 30vw);
 		object-fit: contain;
-		opacity: 0.5;
-		filter: drop-shadow(0 24px 48px rgba(0, 0, 0, 0.6));
+		opacity: 0.1;
 		will-change: transform;
 	}
 
 	@media (max-width: 768px) {
 		.skill-bg-img {
 			width: min(170px, 42vw);
-			opacity: 0.4;
+			opacity: 0;
 		}
 	}
 </style>
