@@ -2,22 +2,25 @@
 // Portfolio section
 const projects = [
 	{
-		title: 'Project One',
-		desc: 'Miniwidgets',
+		title: 'Mini Widgets Collection',
+		desc: 'Una colección de mini widgets interactivos diseñados para ser incrustados como iframe',
+		descEN: 'A collection of mini interactive widgets designed to be embedded as iframes',
 		tags: ['React', 'Node.js'],
 		href: '#',
-		src: '',
+		src: 'img/portfolio/mini.png',
 	},
 	{
 		title: 'Project Two',
 		desc: 'ESP32',
+		descEN: 'ESP32',
 		tags: ['Astro', 'TypeScript'],
 		href: '#',
 		src: '',
 	},
 	{
 		title: 'Project Three',
-		desc: 'Portfolio terminal',
+		desc: 'Portafolio terminal',
+		descEN: 'Portfolio terminal',
 		tags: ['CSS3', 'JavaScript'],
 		href: '#',
 		src: '',
@@ -25,6 +28,7 @@ const projects = [
 	{
 		title: 'Project Four',
 		desc: 'algun connect',
+		descEN: 'Some connect',
 		tags: ['CSS3', 'JavaScript'],
 		href: '#',
 		src: '',
@@ -32,6 +36,7 @@ const projects = [
 	{
 		title: 'Project Five',
 		desc: 'revisar algo de depredador apps',
+		descEN: 'Review some predator apps',
 		tags: ['CSS3', 'JavaScript'],
 		href: '#',
 		src: '',
@@ -43,7 +48,12 @@ const projects = [
 	<div class="portfolio-wrap">
 
 		<div class="portfolio-header">
-			<p class="section-label" id="portfolio-label">≥ Portfolio</p>
+			<p
+				class="section-label"
+				id="portfolio-label"
+				data-en="≥ Portfolio"
+				data-es="≥ Portafolio"
+			>≥ Portfolio</p>
 			<img
 				src="/img/portfolio/avatar-dev.png"
 				alt="Avatar dev"
@@ -78,18 +88,49 @@ const projects = [
 		</div>
 
 	</div>
+	<!-- El contenedor debe ser relativo si quieres limitar el canvas a una sección -->
+<div style="position: relative; width: 100%; height: 400px; background: #f0f0f0;">
+  
+  <p>Este es un texto de fondo que se verá detrás de los elementos flotantes.</p>
+  <!-- Tringulo verde -->
+  <div style="position: absolute; top: 50px; left: 50px; width: 0; height: 0; border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 100px solid green;"></div>
+  <!-- Circulo azul -->
+  <div style="position: absolute; top: 100px; left: 150px; width: 80px; height: 80px; background-color: blue; border-radius: 50%;"></div>
+  <!-- Cuadrado rojo -->
+  <div style="position: absolute; top: 200px; left: 250px; width: 100px; height: 100px; background-color: red;"></div>
+
+  <!-- El canvas se superpone sin fondo propio -->
+  <canvas id="miCanvas" style="position: absolute; top: 0; left: 0; pointer-events: none;"></canvas>
+</div>
+
 </section>
 
 <script>
 	import { gsap } from 'gsap';
 
 	const labelEl = document.querySelector<HTMLElement>('#portfolio-label');
-	if (labelEl) {
-		const text = labelEl.textContent ?? '';
+	let labelVisible = false;
+
+	function renderLabel(lang: 'en' | 'es') {
+		if (!labelEl) return;
+		const text = (lang === 'es' ? labelEl.dataset.es : labelEl.dataset.en) ?? labelEl.textContent ?? '';
 		labelEl.innerHTML = [...text]
 			.map(ch => `<span class="pl">${ch === ' ' ? '&nbsp;' : ch}</span>`)
 			.join('');
-		gsap.set('.pl', { opacity: 0, y: 18, rotateX: -80 });
+		const letters = labelEl.querySelectorAll<HTMLElement>('.pl');
+		if (labelVisible) {
+			gsap.set(letters, { opacity: 1, y: 0, rotateX: 0 });
+		} else {
+			gsap.set(letters, { opacity: 0, y: 18, rotateX: -80 });
+		}
+	}
+
+	if (labelEl) {
+		const initialLang = localStorage.getItem('site-lang') === 'es' ? 'es' : 'en';
+		renderLabel(initialLang);
+		window.addEventListener('langchange', (e) => {
+			renderLabel((e as CustomEvent<{ lang: 'en' | 'es' }>).detail.lang);
+		});
 	}
 
 	const fadeEls = Array.from(document.querySelectorAll<HTMLElement>('.portfolio [data-fade]'));
@@ -126,6 +167,7 @@ const projects = [
 	if (labelEl) {
 		const labelObs = new IntersectionObserver((entries) => {
 			entries.forEach(entry => {
+				labelVisible = entry.isIntersecting;
 				const letters = entry.target.querySelectorAll<HTMLElement>('.pl');
 				if (entry.isIntersecting) {
 					gsap.to(letters, {
@@ -140,6 +182,7 @@ const projects = [
 		}, { threshold: 0.15 });
 		labelObs.observe(labelEl);
 	}
+	
 </script>
 
 <style>

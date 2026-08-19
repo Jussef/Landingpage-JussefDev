@@ -2,11 +2,11 @@
 interface Props {
 	title?: string;
 }
-const { title = "Jussef | Web Developer" } = Astro.props;
+const { title = "Jussef | Software Engineer" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,10 +24,10 @@ const { title = "Jussef | Web Developer" } = Astro.props;
 					<img src="/img/logo.png" alt="JussDev" class="logo-img" />
 				</a>
 				<ul class="nav-links">
-					<li><a href="#about"     class="nav-link">About</a></li>
-					<li><a href="#skills"    class="nav-link">Skills</a></li>
-					<li><a href="#portfolio" class="nav-link">Portfolio</a></li>
-					<li><a href="#social"    class="nav-link">Social</a></li>
+					<li><a href="#about"     class="nav-link" data-i18n data-en="About"     data-es="Sobre mí">About</a></li>
+					<li><a href="#skills"    class="nav-link" data-i18n data-en="Skills"    data-es="Habilidades">Skills</a></li>
+					<li><a href="#portfolio" class="nav-link" data-i18n data-en="Portfolio" data-es="Portafolio">Portfolio</a></li>
+					<li><a href="#social"    class="nav-link" data-i18n data-en="Social"    data-es="Social">Social</a></li>
 				</ul>
 			</div>
 		</nav>
@@ -39,6 +39,48 @@ const { title = "Jussef | Web Developer" } = Astro.props;
 	const navbar = document.getElementById('navbar')!;
 	window.addEventListener('scroll', () => {
 		navbar.classList.toggle('scrolled', window.scrollY > 60);
+	});
+</script>
+
+<script>
+	// Global language state — shared by every section on the page.
+	// Any element with data-i18n + data-en/data-es gets its text swapped
+	// automatically. Components with more complex markup (letter-split
+	// titles, etc.) listen for the "langchange" event instead.
+	type Lang = 'en' | 'es';
+	const STORAGE_KEY = 'site-lang';
+
+	function getStoredLang(): Lang {
+		return localStorage.getItem(STORAGE_KEY) === 'es' ? 'es' : 'en';
+	}
+
+	function applyLang(lang: Lang) {
+		document.documentElement.lang = lang;
+
+		document.querySelectorAll<HTMLElement>('[data-i18n]').forEach((el) => {
+			const text = lang === 'es' ? el.dataset.es : el.dataset.en;
+			if (text !== undefined) el.textContent = text;
+		});
+
+		document.querySelectorAll<HTMLInputElement>('#lang-switch').forEach((input) => {
+			input.checked = lang === 'es';
+		});
+
+		window.dispatchEvent(new CustomEvent('langchange', { detail: { lang } }));
+	}
+
+	function setLang(lang: Lang) {
+		localStorage.setItem(STORAGE_KEY, lang);
+		applyLang(lang);
+	}
+
+	applyLang(getStoredLang());
+
+	document.addEventListener('change', (e) => {
+		const target = e.target as HTMLElement;
+		if (target?.id === 'lang-switch') {
+			setLang((target as HTMLInputElement).checked ? 'es' : 'en');
+		}
 	});
 </script>
 

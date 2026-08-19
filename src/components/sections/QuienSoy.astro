@@ -5,7 +5,12 @@
 <section class="about" id="about">
 	<div class="about-wrap">
 
-		<p class="section-label" id="about-label">≥ About</p>
+		<p
+			class="section-label"
+			id="about-label"
+			data-en="≥ About"
+			data-es="≥ Sobre mí"
+		>≥ About</p>
 
 		<div class="about-grid">
 			<div class="about-img-col" data-slide>
@@ -13,18 +18,30 @@
 			</div>
 
 			<div class="about-text-col">
-				<p data-fade>
-					Hi! I'm a developer who loves sharing and teaching what I've learned.
-					I have over 6 years of experience building web applications.
-				</p>
-				<p data-fade>
-					I'm passionate about staying up to date with the latest technologies —
-					I truly believe that one day we'll see robots just like in the movies,
-					and that's one of the reasons I love programming.
-				</p>
-				<p data-fade>
-					I'm also a big fan of 80s pop culture and the cyberpunk aesthetic.
-				</p>
+				<p
+					data-fade
+					data-i18n
+					data-en="I'm a web developer focused on building modern applications that go beyond just the interface."
+					data-es="Soy desarrollador web enfocado en crear aplicaciones modernas que no se quedan solo en la interfaz."
+				>I'm a web developer focused on building modern applications that go beyond just the interface.</p>
+				<p
+					data-fade
+					data-i18n
+					data-en="I work with React, Astro, Firebase, Vercel, Google Cloud, Docker, and more to build clear, functional experiences — connecting apps to real authentication and data, and handling everything needed to ship them to production in the cloud."
+					data-es="Trabajo con React, Astro, Firebase, Vercel, Google Cloud, Docker y más, para construir experiencias claras y funcionales, conecto aplicaciones con autenticación y datos reales, y gestiono el proceso necesario para llevarlas a producción en la nube."
+				>I work with React, Astro, Firebase, Vercel, Google Cloud, Docker, and more to build clear, functional experiences — connecting apps to real authentication and data, and handling everything needed to ship them to production in the cloud.</p>
+				<p
+					data-fade
+					data-i18n
+					data-en="I like understanding how every part of a project works and solving the challenges along the way: from structuring the UI and wiring up services to configuring deployments, containers, and production environments."
+					data-es="Me gusta entender cómo funciona cada parte del proyecto y resolver los retos que aparecen en el camino: desde estructurar la interfaz y conectar servicios hasta configurar despliegues, contenedores y entornos de producción."
+				>I like understanding how every part of a project works and solving the challenges along the way: from structuring the UI and wiring up services to configuring deployments, containers, and production environments.</p>
+				<p
+					data-fade
+					data-i18n
+					data-en="My goal is simple: turn ideas into applications that actually work."
+					data-es="Mi objetivo es simple: convertir ideas en aplicaciones que realmente funcionen."
+				>My goal is simple: turn ideas into applications that actually work.</p>
 
 				<div class="lang-toggle" data-fade>
 					<span class="lang-label">EN</span>
@@ -44,14 +61,30 @@
 <script>
 	import { gsap } from 'gsap';
 
-	// Split label into character spans
+	// Split label into character spans — re-run whenever the language changes
 	const labelEl = document.querySelector<HTMLElement>('#about-label');
-	if (labelEl) {
-		const text = labelEl.textContent ?? '';
+	let labelVisible = false;
+
+	function renderLabel(lang: 'en' | 'es') {
+		if (!labelEl) return;
+		const text = (lang === 'es' ? labelEl.dataset.es : labelEl.dataset.en) ?? labelEl.textContent ?? '';
 		labelEl.innerHTML = [...text]
 			.map(ch => `<span class="al">${ch === ' ' ? '&nbsp;' : ch}</span>`)
 			.join('');
-		gsap.set('.al', { opacity: 0, y: 18, rotateX: -80 });
+		const letters = labelEl.querySelectorAll<HTMLElement>('.al');
+		if (labelVisible) {
+			gsap.set(letters, { opacity: 1, y: 0, rotateX: 0 });
+		} else {
+			gsap.set(letters, { opacity: 0, y: 18, rotateX: -80 });
+		}
+	}
+
+	if (labelEl) {
+		const initialLang = localStorage.getItem('site-lang') === 'es' ? 'es' : 'en';
+		renderLabel(initialLang);
+		window.addEventListener('langchange', (e) => {
+			renderLabel((e as CustomEvent<{ lang: 'en' | 'es' }>).detail.lang);
+		});
 	}
 
 	// Observe image + paragraphs — add AND remove .visible on scroll
@@ -72,34 +105,11 @@
 
 	allEls.forEach(el => visObs.observe(el));
 
-	// Language toggle — EN ↔ ES
-	const langSwitch = document.getElementById('lang-switch') as HTMLInputElement | null;
-	if (langSwitch) {
-		const paras = Array.from(document.querySelectorAll<HTMLElement>('.about-text-col p[data-fade]'));
-		const texts = [
-			{
-				en: "Hi! I'm a developer who loves sharing and teaching what I've learned. I have over 6 years of experience building web applications.",
-				es: "¡Hola! Soy un desarrollador que ama compartir y enseñar lo que he aprendido. Tengo más de 6 años de experiencia construyendo aplicaciones web."
-			},
-			{
-				en: "I'm passionate about staying up to date with the latest technologies — I truly believe that one day we'll see robots just like in the movies, and that's one of the reasons I love programming.",
-				es: "Me apasiona mantenerme al día con las últimas tecnologías — realmente creo que algún día veremos robots tal como en las películas, y esa es una de las razones por las que amo la programación."
-			},
-			{
-				en: "I'm also a big fan of 80s pop culture and the cyberpunk aesthetic.",
-				es: "También soy un gran fan de la cultura pop de los 80s y la estética cyberpunk."
-			}
-		];
-		langSwitch.addEventListener('change', () => {
-			const lang = langSwitch.checked ? 'es' : 'en';
-			paras.forEach((p, i) => { p.textContent = texts[i][lang]; });
-		});
-	}
-
 	// Letter animation for label — in on enter, reset on leave
 	if (labelEl) {
 		const labelObs = new IntersectionObserver((entries) => {
 			entries.forEach(entry => {
+				labelVisible = entry.isIntersecting;
 				const letters = entry.target.querySelectorAll<HTMLElement>('.al');
 				if (entry.isIntersecting) {
 					gsap.to(letters, {
