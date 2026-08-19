@@ -1,0 +1,285 @@
+---
+// Contact section
+
+const links = [
+	{ name: 'LinkedIn', href: 'https://www.linkedin.com/in/jussefo/', img: '/img/contact/linkedin.png' },
+	{ name: 'GitHub', href: 'https://github.com/Jussef', img: '/img/contact/github.png' },
+	{ name: 'Twitter / X', href: '#', img: '/img/contact/x.png' },
+	{ name: 'Instagram', href: 'https://www.instagram.com/jussefdev/', img: '/img/contact/insta.png' },
+	{ name: 'Email', href: 'mailto:jussefwebstudio@gmail.com', img: '/img/contact/mail.png' },
+];
+---
+
+<section class="contact" id="contact">
+	<div class="contact-wrap">
+		<div class="contact-text">
+			<p
+				class="section-label"
+				id="contact-label"
+				data-en="≥ Contact"
+				data-es="≥ Contacto"
+			>≥ Contact</p>
+
+			<h2 class="contact-heading">
+				<span data-en="Let's connect" data-es="Conectemos">Let's connect</span>
+				<span class="contact-heading-accent" data-en="right here" data-es="por aquí">right here</span>
+			</h2>
+
+			<div class="contact-divider" aria-hidden="true"></div>
+
+			<p
+				class="contact-sub"
+				data-en="I'm always open to new opportunities, collaborations, or just chatting about great ideas."
+				data-es="Estoy siempre abierto a nuevas oportunidades, colaboraciones o simplemente a charlar sobre ideas geniales."
+			>I'm always open to new opportunities, collaborations, or just chatting about great ideas.</p>
+
+			<div class="contact-tagline">
+				<span class="contact-tagline-bar" aria-hidden="true"></span>
+				<img src="/img/contact/badge.png" alt="Hablemos de ideas" class="contact-badge" />
+			</div>
+		</div>
+
+		<div class="contact-cards">
+			<ul class="contact-cards-list">
+				{links.map((l) => (
+					<li class="contact-card-item">
+						<a href={l.href} target="_blank" rel="noopener noreferrer" class="contact-card" aria-label={l.name}>
+							<img src={l.img} alt={l.name} />
+						</a>
+					</li>
+				))}
+			</ul>
+			<img src="/img/contact/stay.png" alt="Stay in touch" class="contact-stay" />
+		</div>
+	</div>
+</section>
+
+<script>
+	import { gsap } from 'gsap';
+
+	const labelEl = document.querySelector<HTMLElement>('#contact-label');
+	let labelVisible = false;
+
+	function renderLabel(lang: 'en' | 'es') {
+		if (!labelEl) return;
+		const text = (lang === 'es' ? labelEl.dataset.es : labelEl.dataset.en) ?? labelEl.textContent ?? '';
+		labelEl.innerHTML = [...text]
+			.map(ch => `<span class="pl">${ch === ' ' ? '&nbsp;' : ch}</span>`)
+			.join('');
+		const letters = labelEl.querySelectorAll<HTMLElement>('.pl');
+		if (labelVisible) {
+			gsap.set(letters, { opacity: 1, y: 0, rotateX: 0 });
+		} else {
+			gsap.set(letters, { opacity: 0, y: 18, rotateX: -80 });
+		}
+	}
+
+	function applyLang(lang: 'en' | 'es') {
+		document.querySelectorAll<HTMLElement>('.contact [data-en][data-es]').forEach(el => {
+			if (el.id === 'contact-label') return;
+			el.textContent = (lang === 'es' ? el.dataset.es : el.dataset.en) ?? el.textContent ?? '';
+		});
+	}
+
+	if (labelEl) {
+		const initialLang = localStorage.getItem('site-lang') === 'es' ? 'es' : 'en';
+		renderLabel(initialLang);
+		applyLang(initialLang);
+		window.addEventListener('langchange', (e) => {
+			const lang = (e as CustomEvent<{ lang: 'en' | 'es' }>).detail.lang;
+			renderLabel(lang);
+			applyLang(lang);
+		});
+
+		const labelObs = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				labelVisible = entry.isIntersecting;
+				const letters = entry.target.querySelectorAll<HTMLElement>('.pl');
+				if (entry.isIntersecting) {
+					gsap.to(letters, {
+						opacity: 1, y: 0, rotateX: 0,
+						duration: 0.5, stagger: 0.07,
+						ease: 'power3.out',
+					});
+				} else {
+					gsap.set(letters, { opacity: 0, y: 18, rotateX: -80 });
+				}
+			});
+		}, { threshold: 0.15 });
+		labelObs.observe(labelEl);
+	}
+</script>
+
+<style>
+	.contact {
+		position: relative;
+		padding: 7rem 3rem;
+	}
+
+	.contact-wrap {
+		max-width: 1200px;
+		margin: 0 auto;
+		text-align: left;
+		display: grid;
+		grid-template-columns: minmax(280px, 420px) 1fr;
+		align-items: center;
+		gap: 2rem;
+	}
+
+	.section-label {
+		font-family: var(--font-main);
+		font-size: 1rem;
+		font-weight: 500;
+		color: var(--accent-orange);
+		margin: 0;
+		letter-spacing: 0.04em;
+		perspective: 600px;
+	}
+
+	.contact-heading {
+		font-family: var(--font-main);
+		font-size: clamp(2.5rem, 6vw, 4rem);
+		font-weight: 700;
+		line-height: 1.15;
+		margin: 1.75rem 0 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.contact-heading span {
+		color: var(--text-primary);
+	}
+
+	.contact-heading span.contact-heading-accent {
+		color: var(--accent-orange);
+	}
+
+	.contact-divider {
+		width: 260px;
+		max-width: 60%;
+		height: 5px;
+		border-radius: 999px;
+		margin: 1.75rem 0;
+		background: linear-gradient(90deg, #3b82f6, #2ecc71, var(--accent-orange), #e4468a);
+	}
+
+	.contact-sub {
+		font-family: var(--font-main);
+		font-size: 1rem;
+		line-height: 1.7;
+		color: var(--text-muted);
+		max-width: 480px;
+		margin: 0;
+	}
+
+	.pl {
+		display: inline-block;
+		will-change: transform, opacity;
+	}
+
+	.contact-tagline {
+		display: flex;
+		align-items: center;
+		gap: 0.9rem;
+		margin: 2.75rem 0 0;
+	}
+
+	.contact-tagline-bar {
+		width: 6px;
+		height: 64px;
+		flex-shrink: 0;
+		border-radius: 999px;
+		background: linear-gradient(180deg, #e63946, var(--accent-orange), #f4c542, var(--accent-cyan));
+	}
+
+	.contact-badge {
+		height: 52px;
+		width: auto;
+		display: block;
+	}
+
+	.contact-cards {
+		position: relative;
+	}
+
+	.contact-cards-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.contact-card-item {
+		position: relative;
+		z-index: 1;
+		margin-left: -18px;
+		transition: transform 0.3s ease, z-index 0s;
+	}
+
+	.contact-card-item:first-child {
+		margin-left: 0;
+	}
+
+	.contact-card-item:hover {
+		z-index: 5;
+		transform: translateY(-14px);
+	}
+
+	.contact-card {
+		display: block;
+		filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.5));
+		transition: filter 0.3s ease;
+	}
+
+	.contact-card:hover {
+		filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.65));
+	}
+
+	.contact-card img {
+		display: block;
+		width: 165px;
+		height: auto;
+		border-radius: 10px;
+	}
+
+	.contact-stay {
+		display: block;
+		height: 46px;
+		width: auto;
+		margin: 1.5rem 0 0 auto;
+	}
+
+	@media (max-width: 900px) {
+		.contact-wrap {
+			grid-template-columns: 1fr;
+			gap: 3rem;
+		}
+
+		.contact-cards-list {
+			justify-content: flex-start;
+			overflow-x: auto;
+			padding-bottom: 0.5rem;
+		}
+
+		.contact-card-item {
+			margin-left: -14px;
+		}
+
+		.contact-card-item:first-child {
+			margin-left: 0;
+		}
+
+		.contact-card img {
+			width: 108px;
+		}
+
+		.contact-stay {
+			margin: 1.5rem auto 0 0;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.contact { padding: 5rem 1.5rem; }
+	}
+</style>
