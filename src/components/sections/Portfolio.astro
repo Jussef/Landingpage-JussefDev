@@ -5,9 +5,17 @@ const projects = [
 		title: 'Mini Widgets Collection',
 		desc: 'Una colección de mini widgets interactivos diseñados para ser incrustados como iframe',
 		descEN: 'A collection of mini interactive widgets designed to be embedded as iframes',
-		tags: ['React', 'Node.js'],
-		href: '#',
+		tags: ['React', 'TypeScript', 'Vite'],
+		href: 'https://mini-widgets.vercel.app/',
 		src: 'img/portfolio/mini.png',
+	},
+	{
+		title: 'Subscription Manager',
+		desc: 'Una aplicación web para gestionar suscripciones y pagos recurrentes con recordatorios automáticos',
+		descEN: 'A web application for managing subscriptions and recurring payments with automatic reminders',
+		tags: ['React', 'TypeScript', 'Vite', 'Node.js'],
+		href: 'https://subs.juss.dev/',
+		src: 'img/portfolio/subs.png',
 	},
 	{
 		title: 'Project Two',
@@ -66,6 +74,8 @@ const projects = [
 			{projects.map((p, i) => (
 				<a
 					href={p.href}
+					target="_blank"
+					rel="noopener noreferrer"
 					class="project-card"
 					data-fade
 					style={`--delay: ${Math.floor(i / 2) * 0.15}s;`}
@@ -88,21 +98,6 @@ const projects = [
 		</div>
 
 	</div>
-	<!-- El contenedor debe ser relativo si quieres limitar el canvas a una sección -->
-<div style="position: relative; width: 100%; height: 400px; background: #f0f0f0;">
-  
-  <p>Este es un texto de fondo que se verá detrás de los elementos flotantes.</p>
-  <!-- Tringulo verde -->
-  <div style="position: absolute; top: 50px; left: 50px; width: 0; height: 0; border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 100px solid green;"></div>
-  <!-- Circulo azul -->
-  <div style="position: absolute; top: 100px; left: 150px; width: 80px; height: 80px; background-color: blue; border-radius: 50%;"></div>
-  <!-- Cuadrado rojo -->
-  <div style="position: absolute; top: 200px; left: 250px; width: 100px; height: 100px; background-color: red;"></div>
-
-  <!-- El canvas se superpone sin fondo propio -->
-  <canvas id="miCanvas" style="position: absolute; top: 0; left: 0; pointer-events: none;"></canvas>
-</div>
-
 </section>
 
 <script>
@@ -182,7 +177,6 @@ const projects = [
 		}, { threshold: 0.15 });
 		labelObs.observe(labelEl);
 	}
-	
 </script>
 
 <style>

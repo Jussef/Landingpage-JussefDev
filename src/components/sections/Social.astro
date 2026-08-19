@@ -1,0 +1,237 @@
+---
+// Social section
+---
+
+<section class="social" id="social">
+	<div class="social-wrap">
+		<p
+			class="section-label"
+			id="social-label"
+			data-en="≥ Social"
+			data-es="≥ Social"
+		>≥ Social</p>
+	</div>
+
+	<div class="social-canvas-wrap" id="social-canvas-wrap">
+		<canvas id="social-canvas" class="social-canvas"></canvas>
+	</div>
+</section>
+
+<script>
+	import { gsap } from 'gsap';
+
+	const labelEl = document.querySelector<HTMLElement>('#social-label');
+	let labelVisible = false;
+
+	function renderLabel(lang: 'en' | 'es') {
+		if (!labelEl) return;
+		const text = (lang === 'es' ? labelEl.dataset.es : labelEl.dataset.en) ?? labelEl.textContent ?? '';
+		labelEl.innerHTML = [...text]
+			.map(ch => `<span class="pl">${ch === ' ' ? '&nbsp;' : ch}</span>`)
+			.join('');
+		const letters = labelEl.querySelectorAll<HTMLElement>('.pl');
+		if (labelVisible) {
+			gsap.set(letters, { opacity: 1, y: 0, rotateX: 0 });
+		} else {
+			gsap.set(letters, { opacity: 0, y: 18, rotateX: -80 });
+		}
+	}
+
+	if (labelEl) {
+		const initialLang = localStorage.getItem('site-lang') === 'es' ? 'es' : 'en';
+		renderLabel(initialLang);
+		window.addEventListener('langchange', (e) => {
+			renderLabel((e as CustomEvent<{ lang: 'en' | 'es' }>).detail.lang);
+		});
+
+		const labelObs = new IntersectionObserver((entries) => {
+			entries.forEach(entry => {
+				labelVisible = entry.isIntersecting;
+				const letters = entry.target.querySelectorAll<HTMLElement>('.pl');
+				if (entry.isIntersecting) {
+					gsap.to(letters, {
+						opacity: 1, y: 0, rotateX: 0,
+						duration: 0.5, stagger: 0.07,
+						ease: 'power3.out',
+					});
+				} else {
+					gsap.set(letters, { opacity: 0, y: 18, rotateX: -80 });
+				}
+			});
+		}, { threshold: 0.15 });
+		labelObs.observe(labelEl);
+	}
+
+	// --- Canvas scene: text + geometric shapes drawn on canvas, ready for animation/interaction ---
+	const canvasWrap = document.getElementById('social-canvas-wrap');
+	const canvas = document.getElementById('social-canvas') as HTMLCanvasElement | null;
+
+	if (canvasWrap && canvas) {
+		const ctx = canvas.getContext('2d')!;
+		const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+		type ShapeType = 'triangle' | 'circle' | 'square';
+		interface Shape {
+			type: ShapeType;
+			x: number; // fraction of canvas width (0-1)
+			y: number; // fraction of canvas height (0-1)
+			size: number; // base size in px
+			color: string;
+			hover: number; // eased 0-1 hover amount, used by future interaction/animation
+		}
+
+		const shapes: Shape[] = [
+			{ type: 'triangle', x: 0.12, y: 0.3, size: 90, color: '#2ecc71', hover: 0 },
+			{ type: 'circle', x: 0.32, y: 0.5, size: 80, color: '#3b82f6', hover: 0 },
+			{ type: 'square', x: 0.55, y: 0.7, size: 90, color: '#e74c3c', hover: 0 },
+		];
+
+		const bgText = 'Estas son mis redes sociales.';
+
+		let width = 0;
+		let height = 0;
+		let pointerX = -9999;
+		let pointerY = -9999;
+
+		function resize() {
+			if (!canvasWrap || !canvas) return;
+			width = canvasWrap.clientWidth;
+			height = canvasWrap.clientHeight;
+			canvas.width = width * dpr;
+			canvas.height = height * dpr;
+			canvas.style.width = `${width}px`;
+			canvas.style.height = `${height}px`;
+			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+		}
+
+		function drawBackgroundText() {
+			ctx.save();
+			ctx.font = "600 26px 'Space Grotesk', sans-serif";
+			ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+			ctx.textBaseline = 'top';
+			wrapText(bgText, width * 0.05, height * 0.06, width * 0.9, 34);
+			ctx.restore();
+		}
+
+		function wrapText(text: string, x: number, y: number, maxWidth: number, lineHeight: number) {
+			const words = text.split(' ');
+			let line = '';
+			let cursorY = y;
+			for (const word of words) {
+				const testLine = line ? `${line} ${word}` : word;
+				if (ctx.measureText(testLine).width > maxWidth && line) {
+					ctx.fillText(line, x, cursorY);
+					line = word;
+					cursorY += lineHeight;
+				} else {
+					line = testLine;
+				}
+			}
+			if (line) ctx.fillText(line, x, cursorY);
+		}
+
+		function drawShape(shape: Shape) {
+			const cx = shape.x * width;
+			const cy = shape.y * height;
+			const scale = 1 + shape.hover * 0.15;
+			const size = shape.size * scale;
+
+			ctx.save();
+			ctx.fillStyle = shape.color;
+
+			if (shape.type === 'triangle') {
+				ctx.beginPath();
+				ctx.moveTo(cx, cy - size / 2);
+				ctx.lineTo(cx - size / 2, cy + size / 2);
+				ctx.lineTo(cx + size / 2, cy + size / 2);
+				ctx.closePath();
+				ctx.fill();
+			} else if (shape.type === 'circle') {
+				ctx.beginPath();
+				ctx.arc(cx, cy, size / 2, 0, Math.PI * 2);
+				ctx.fill();
+			} else {
+				ctx.fillRect(cx - size / 2, cy - size / 2, size, size);
+			}
+
+			ctx.restore();
+		}
+
+		function render() {
+			ctx.clearRect(0, 0, width, height);
+			drawBackgroundText();
+
+			for (const shape of shapes) {
+				const cx = shape.x * width;
+				const cy = shape.y * height;
+				const dist = Math.hypot(pointerX - cx, pointerY - cy);
+				const target = dist < shape.size ? 1 : 0;
+				shape.hover += (target - shape.hover) * 0.12;
+				drawShape(shape);
+			}
+
+			requestAnimationFrame(render);
+		}
+
+		canvas.addEventListener('pointermove', (e) => {
+			const rect = canvas.getBoundingClientRect();
+			pointerX = e.clientX - rect.left;
+			pointerY = e.clientY - rect.top;
+		});
+		canvas.addEventListener('pointerleave', () => {
+			pointerX = -9999;
+			pointerY = -9999;
+		});
+
+		const canvasResizeObs = new ResizeObserver(() => resize());
+		canvasResizeObs.observe(canvasWrap);
+
+		resize();
+		requestAnimationFrame(render);
+	}
+</script>
+
+<style>
+	.social {
+		position: relative;
+		padding: 7rem 3rem;
+	}
+
+	.social-wrap {
+		max-width: 1100px;
+		margin: 0 auto;
+	}
+
+	.section-label {
+		font-family: var(--font-main);
+		font-size: 1rem;
+		font-weight: 500;
+		color: var(--accent-orange);
+		margin: 0;
+		letter-spacing: 0.04em;
+		perspective: 600px;
+	}
+
+	.pl {
+		display: inline-block;
+		will-change: transform, opacity;
+	}
+
+	.social-canvas-wrap {
+		position: relative;
+		max-width: 1100px;
+		margin: 3.5rem auto 0;
+		width: 100%;
+		height: 400px;
+	}
+
+	.social-canvas {
+		position: absolute;
+		inset: 0;
+		display: block;
+	}
+
+	@media (max-width: 768px) {
+		.social { padding: 5rem 1.5rem; }
+	}
+</style>
