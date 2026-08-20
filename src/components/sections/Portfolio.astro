@@ -18,15 +18,15 @@ const projects = [
 		src: 'img/portfolio/subs.png',
 	},
 	{
-		title: 'Project Two',
-		desc: 'ESP32',
-		descEN: 'ESP32',
+		title: 'Portfolio Terminal',
+		desc: 'Un portafolio interactivo con estilo de terminal y windows 98, construido con Astro y TypeScript',
+		descEN: 'An interactive portfolio with a terminal and Windows 98 style, built with Astro and TypeScript',
 		tags: ['Astro', 'TypeScript'],
 		href: '#',
 		src: '',
 	},
 	{
-		title: 'Project Three',
+		title: 'Projects Esp32',
 		desc: 'Portafolio terminal',
 		descEN: 'Portfolio terminal',
 		tags: ['CSS3', 'JavaScript'],
@@ -90,7 +90,7 @@ const projects = [
 						<h3 class="project-title">{p.title}</h3>
 						<p class="project-desc">{p.desc}</p>
 						<ul class="project-tags">
-							{p.tags.map(tag => <li>{tag}</li>)}
+							{p.tags.map(tag => <li data-tag={tag.toLowerCase().replaceAll("+", "p").replace(/[^a-z0-9]/g, "")}>{tag}</li>)}
 						</ul>
 					</div>
 				</a>
@@ -336,13 +336,37 @@ const projects = [
 		font-family: var(--font-main);
 		font-size: 0.72rem;
 		font-weight: 500;
-		color: var(--accent-orange);
-		background: rgba(255, 120, 50, 0.1);
-		border: 1px solid rgba(255, 120, 50, 0.25);
+		--tag-color: var(--accent-orange);
+		color: var(--tag-color);
+		background: color-mix(in srgb, var(--tag-color) 12%, transparent);
+		border: 1px solid color-mix(in srgb, var(--tag-color) 30%, transparent);
 		border-radius: 4px;
 		padding: 0.15rem 0.55rem;
 		letter-spacing: 0.03em;
 	}
+
+	/* Tag colors per technology (brand palette) */
+	.project-tags li[data-tag="react"]      { --tag-color: #61dafb; }
+	.project-tags li[data-tag="typescript"] { --tag-color: #3178c6; }
+	.project-tags li[data-tag="javascript"] { --tag-color: #f7df1e; }
+	.project-tags li[data-tag="vite"]       { --tag-color: #a259ff; }
+	.project-tags li[data-tag="nodejs"]     { --tag-color: #6cc24a; }
+	.project-tags li[data-tag="astro"]      { --tag-color: #ff5d01; }
+	.project-tags li[data-tag="css3"]       { --tag-color: #56a8ff; }
+	.project-tags li[data-tag="html5"]      { --tag-color: #e34f26; }
+	.project-tags li[data-tag="tailwind"]   { --tag-color: #38bdf8; }
+	.project-tags li[data-tag="sass"]       { --tag-color: #cf649a; }
+	.project-tags li[data-tag="python"]     { --tag-color: #ffd43b; }
+	.project-tags li[data-tag="gsap"]       { --tag-color: #88ce02; }
+	.project-tags li[data-tag="nextjs"]     { --tag-color: #e8eaf0; }
+	.project-tags li[data-tag="vuejs"]      { --tag-color: #42b883; }
+	.project-tags li[data-tag="php"]        { --tag-color: #8993be; }
+	.project-tags li[data-tag="mongodb"]    { --tag-color: #4faa41; }
+	.project-tags li[data-tag="firebase"]   { --tag-color: #ffca28; }
+	.project-tags li[data-tag="supabase"]   { --tag-color: #3ecf8e; }
+	.project-tags li[data-tag="arduino"]    { --tag-color: #00979d; }
+	.project-tags li[data-tag="esp32"]      { --tag-color: #e7352c; }
+	.project-tags li[data-tag="cpp"]        { --tag-color: #649ad2; }
 
 	/* data-fade — cards rise up from below and settle in place */
 	[data-fade] {
